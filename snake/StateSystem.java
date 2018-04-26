@@ -1,5 +1,4 @@
-import java.awt.Graphics;
-import java.awt.event.KeyEvent;
+import java.awt.*;
 import java.util.LinkedList;
 
 
@@ -11,9 +10,6 @@ public class StateSystem
 
     public boolean getInput(GameEvent e)
     {
-        // use modifier to find out event type (pressed /releaase)
-        // 0: pressed
-        // 1: released
         if(states.size() == 0) return false;
         return states.peek().getInput(e);
     }
@@ -35,7 +31,7 @@ public class StateSystem
         states.peek().update();
     }
 
-    public void draw(Graphics g)
+    public void draw(Graphics2D g)
     {
         for(int i = states.size() - 1; i >= 0; --i)
         {

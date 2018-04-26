@@ -4,22 +4,27 @@ import java.awt.event.MouseEvent;
 
 public class GameEvent
 {
-	public static int key = 1, mouse = 2;
+	public enum EventType
+	{
+		nothing,
+		key,
+		mouse
+	}
 	
 	public InputEvent event;
-	public int type;
+	public EventType type;
 	
 	public GameEvent()
 	{
 		event = null;
-		type = 0; // empty event
+		type = EventType.nothing; // empty event
 	}
 	
 	public GameEvent(InputEvent e)
 	{
 		event = e;
-		type = -1; // unknown
-		if(e instanceof KeyEvent) type = key;
-		else if(e instanceof MouseEvent) type = mouse;
+		type = EventType.nothing; // unknown
+		if(e instanceof KeyEvent) type = EventType.key;
+		else if(e instanceof MouseEvent) type = EventType.mouse;
 	}
 }

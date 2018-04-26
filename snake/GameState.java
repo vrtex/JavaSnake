@@ -1,4 +1,4 @@
-import java.awt.Graphics;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 
 public abstract class GameState
@@ -14,5 +14,5 @@ public abstract class GameState
 
     public abstract void update();
 
-    public abstract void draw(Graphics g);
+    public abstract void draw(Graphics2D g);
 }

@@ -8,24 +8,13 @@ public class Window extends JFrame
     public Window(int width, int height, Game g)
     {
         setSize(width, height);
+        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         requestFocus();
         add(g);
+        addKeyListener(new KeyInput(this));
         pack();
         setVisible(true);
-    }
-
-    public void repack()
-    {
-        setVisible(false);
-        pack();
-        setVisible(true);
-    }
-    
-    
-    public void repack(int a, int b)
-    {
-
     }
     
     public void addEvent(GameEvent e)

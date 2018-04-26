@@ -1,3 +1,4 @@
+import java.util.NoSuchElementException;
 import java.util.TreeMap;
 
 public class ResManager<T>
@@ -16,9 +17,13 @@ public class ResManager<T>
         return true;
     }
 
-    public T get(String id)
+    public T get(String id) throws NoSuchElementException
     {
-        if(!content.containsKey(id)) return null;
+        if(!content.containsKey(id))
+        {
+        	System.out.printf("Element not found: %s", id);
+            throw new NoSuchElementException();
+        }
         return content.get(id);
     }
 
