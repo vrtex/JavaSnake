@@ -11,6 +11,7 @@ public class StateSystem
     public boolean getInput(GameEvent e)
     {
         if(states.size() == 0) return false;
+        System.out.println("passing input");
         return states.peek().getInput(e);
     }
 

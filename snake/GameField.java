@@ -36,15 +36,12 @@ public class GameField extends Rectangle
 		g.fill(this);
 		
 		g.setColor(Color.red);
+		g.translate(x, y);
 		for(Obstacle o : obstacles)
 		{
-			g.fillRect(
-					x + o.x * Game.pieceSize.width ,
-					y + o.y * Game.pieceSize.height,
-					Game.pieceSize.width,
-					Game.pieceSize.height);
-			
+			o.draw(g);
 		}
+		g.translate(-x, -y);
 	}
 	
 	public Pair<Integer, Integer> getPosition()

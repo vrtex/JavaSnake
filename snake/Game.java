@@ -10,6 +10,7 @@ public class Game extends Canvas
 	public static final ResManager<BufferedImage> images = new ResManager<>();
 	public static final Dimension pieceSize;
 	public static final int width, height;
+	public static final Dimension pieceCount;
 	
 	private Window w;
 	private StateSystem states;
@@ -32,6 +33,8 @@ public class Game extends Canvas
 		
 		width = headPic.getWidth() * 21;
 		height = headPic.getHeight() * 21;
+		
+		pieceCount = new Dimension(width / pieceSize.width, height / pieceSize.height);
 	}
 	
 	public Game()
@@ -44,7 +47,7 @@ public class Game extends Canvas
 		states = new StateSystem();
 		
 		w = new Window(700, 700, this);
-		requestFocus();
+		//requestFocus();
 		createBufferStrategy(3);
 	}
 	

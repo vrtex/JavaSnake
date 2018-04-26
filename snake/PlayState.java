@@ -15,13 +15,18 @@ public class PlayState extends GameState
     public PlayState(StateSystem p)
     {
         super(p);
-        
-        field.addObstacle(new Obstacle(2, 3));
+	
+		field.addObstacle(new Obstacle(2, 3));
+		field.addObstacle(new Obstacle(0, 0));
+		field.addObstacle(new Obstacle(0, 1));
+		field.addObstacle(new Obstacle(0, 2));
+		field.addObstacle(new Obstacle(0, 3));
         player = new Player(3, 3, field.getPosition());
     }
 
     public boolean getInput(GameEvent e)
     {
+    	if(player.getInput(e)) return true;
         return false;
     }
 

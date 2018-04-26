@@ -12,7 +12,7 @@ public class Window extends JFrame
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         requestFocus();
         add(g);
-        addKeyListener(new KeyInput(this));
+        addKeyListener(new GameInput(this));
         pack();
         setVisible(true);
     }
