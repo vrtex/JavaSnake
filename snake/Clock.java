@@ -1,6 +1,8 @@
 
 // hello there
 // general kenobi
+// this will make a fine addition to my collection
+
 public class Clock
 {
 	
