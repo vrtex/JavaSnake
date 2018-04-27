@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.util.LinkedList;
 
 
@@ -10,8 +11,9 @@ public class StateSystem
 
     public boolean getInput(GameEvent e)
     {
+        if(e.event.getID() == KeyEvent.KEY_PRESSED && ((KeyEvent)e.event).getKeyCode() == KeyEvent.VK_ESCAPE)
+        	clear(new PlayState(this));
         if(states.size() == 0) return false;
-        System.out.println("passing input");
         return states.peek().getInput(e);
     }
 

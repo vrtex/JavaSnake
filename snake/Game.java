@@ -21,14 +21,16 @@ public class Game extends Canvas
 		
 		try
 		{
+			headPic = ImageIO.read(new File("Res\\headDead.png"));
+			images.insert("headDead", headPic);
 			headPic = ImageIO.read(new File("Res\\head.png"));
+			images.insert("head", headPic);
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 			System.exit(-1);
 		}
-		images.insert("head", headPic);
 		pieceSize = new Dimension(headPic.getWidth(), headPic.getHeight());
 		
 		width = headPic.getWidth() * 21;
@@ -78,7 +80,7 @@ public class Game extends Canvas
         // stuff for drawing
 		Graphics2D g;
 		BufferStrategy bs = getBufferStrategy();
-        
+        setBackground(Color.green);
         while(true)
 		{
 			// events
@@ -93,11 +95,10 @@ public class Game extends Canvas
 			// update stuff
 			// accumulator?
 			states.update();
-			
 			// draw background
 			g = (Graphics2D)bs.getDrawGraphics();
-			g.setColor(Color.green);
-			g.fillRect(0, 0, width, height);
+			paint(g);
+			
 
 			// draw game
 			states.draw(g);

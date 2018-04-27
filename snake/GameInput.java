@@ -19,7 +19,6 @@ public class GameInput implements KeyListener, MouseListener, MouseMotionListene
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
-		if(e.getKeyCode() == KeyEvent.VK_ESCAPE) System.exit(22);
 		parent.addEvent(new GameEvent(e));
 	}
 	
