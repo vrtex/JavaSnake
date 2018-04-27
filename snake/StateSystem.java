@@ -13,7 +13,7 @@ public class StateSystem
     {
         if(e.event.getID() == KeyEvent.KEY_PRESSED && ((KeyEvent)e.event).getKeyCode() == KeyEvent.VK_ESCAPE)
         	clear(new PlayState(this));
-        if(states.size() == 0) return false;
+        if(states.peek() == null) return false;
         return states.peek().getInput(e);
     }
 
@@ -30,7 +30,7 @@ public class StateSystem
             states.push(toAdd);
             toAdd = null;
         }
-        if(states.isEmpty()) return;
+        if(states.peek() == null) return;
         states.peek().update();
     }
 
