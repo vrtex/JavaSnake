@@ -1,2 +1,2 @@
-
-snake/\.idea/
+*
+!*.java
