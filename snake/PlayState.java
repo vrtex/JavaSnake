@@ -1,4 +1,11 @@
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
 public class PlayState extends GameState
 {
@@ -18,11 +25,16 @@ public class PlayState extends GameState
     {
         super(p);
 	
-		field.addObstacle(new Obstacle(2, 3));
-		field.addObstacle(new Obstacle(0, 0));
-		field.addObstacle(new Obstacle(0, 1));
-		field.addObstacle(new Obstacle(0, 2));
-		field.addObstacle(new Obstacle(0, 3));
+//		field.addObstacle(new Obstacle(2, 3));
+//		field.addObstacle(new Obstacle(0, 0));
+//		field.addObstacle(new Obstacle(0, 1));
+//		field.addObstacle(new Obstacle(0, 2));
+//		field.addObstacle(new Obstacle(0, 3));
+		
+		// making them pictures
+		Game.insertRotatedImages("head");
+		Game.insertRotatedImages("headDead");
+		
 		
         player = new Player(startX, startY, field);
     }
@@ -48,4 +60,9 @@ public class PlayState extends GameState
         player.draw(g);
 		g.translate(-field.x, -field.y);
     }
+    
+    public void end()
+	{
+		field.save();
+	}
 }

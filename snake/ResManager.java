@@ -31,5 +31,12 @@ public class ResManager<T>
     {
         return content.containsKey(id);
     }
+    
+    public boolean remove(String id)
+	{
+		if(!contains(id)) return false;
+		content.remove(id);
+		return true;
+	}
 
 }

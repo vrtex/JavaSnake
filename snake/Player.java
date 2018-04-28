@@ -13,6 +13,8 @@ public class Player
 	
 	private int x, y;
 	private BufferedImage headPic;
+	private BufferedImage head[];
+	
 	private Time moveDelay = Time.seconds(0.25); // for changing difficulty
 	private Clock moveTimer;
 	private int xDir, yDir;
@@ -21,12 +23,14 @@ public class Player
 	private boolean dead;
 	private Obstacle testObstacle;
 	private GameField field;
+	private int rotation;
 	
 	public Player(int x, int y, GameField f)
 	{
 		
 		this.x = x;
 		this.y = y;
+		rotation = 0;
 		xDir = 1;
 		yDir = 0;
 		
@@ -34,7 +38,20 @@ public class Player
 		
 		dead = false;
 		
-		headPic = Game.images.get("head");
+		head = new BufferedImage[8];
+		char directions[] = {'R', 'D', 'L', 'U'};
+		String temp = "head";
+		for(int i = 0; i < 4; ++i)
+		{
+			head[i] = Game.images.get(temp + directions[i]);
+		}
+		temp = "headDead";
+		for(int i = 0; i < 4; ++i)
+		{
+			head[i + 4] = Game.images.get(temp + directions[i]);
+		}
+		
+		headPic = head[rotation];
 		if(!Game.images.contains("tail"))
 		{
 			try
@@ -63,30 +80,7 @@ public class Player
 		KeyEvent input = (KeyEvent)e.event;
 		if(e.event.getID() != KeyEvent.KEY_PRESSED) return false;
 		if(dead) return false;
-		switch(input.getKeyCode())
-		{
-		case KeyEvent.VK_DOWN:
-			if(xDir == 0) return true;
-			xDir = 0;
-			yDir = 1;
-			return true;
-		case KeyEvent.VK_UP:
-			if(xDir == 0) return true;
-			xDir = 0;
-			yDir = -1;
-			return true;
-		case KeyEvent.VK_LEFT:
-			if(yDir == 0) return true;
-			xDir = -1;
-			yDir = 0;
-			return true;
-		case KeyEvent.VK_RIGHT:
-			if(yDir == 0) return true;
-			xDir = 1;
-			yDir = 0;
-			return true;
-			
-		}
+		if(rotate(input.getKeyCode())) return true;
 		return false;
 	}
 	
@@ -95,16 +89,7 @@ public class Player
 		if(dead) return;
 		if(moveTimer.getElapsedTime().compareTo(moveDelay) < 0) return;
 		moveTimer.restart();
-		tail.addFirst(new Segment(x, y));
-		x += xDir;
-		y += yDir;
-		
-		
-		if(toAdd > 0)
-			--toAdd;
-		else
-			tail.removeLast();
-		
+		move();
 		testObstacle.x = x;
 		testObstacle.y = y;
 		
@@ -135,11 +120,61 @@ public class Player
 	public void die()
 	{
 		dead = true;
-		headPic = Game.images.get("headDead");
+		headPic = head[rotation + 4];
 	}
 	
 	public  boolean isDead()
 	{
 		return dead;
 	}
+	
+	private boolean rotate(int code)
+	{
+		switch(code)
+		{
+		case KeyEvent.VK_RIGHT:
+			if(yDir == 0) return true;
+			xDir = 1;
+			yDir = 0;
+			rotation = 0;
+			return true;
+		case KeyEvent.VK_DOWN:
+			if(xDir == 0) return true;
+			xDir = 0;
+			yDir = 1;
+			rotation = 1;
+			return true;
+		case KeyEvent.VK_LEFT:
+			if(yDir == 0) return true;
+			xDir = -1;
+			yDir = 0;
+			rotation = 2;
+			return true;
+		case KeyEvent.VK_UP:
+			if(xDir == 0) return true;
+			xDir = 0;
+			yDir = -1;
+			rotation = 3;
+			return true;
+			
+		}
+		return false;
+	}
+	
+	private void move()
+	{
+		tail.addFirst(new Segment(x, y));
+		x += xDir;
+		y += yDir;
+		
+		
+		if(toAdd > 0)
+			--toAdd;
+		else
+			tail.removeLast();
+		
+		headPic = head[rotation];
+		
+	}
+	
 }

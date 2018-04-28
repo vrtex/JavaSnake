@@ -3,10 +3,15 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class Obstacle extends FieldElement
+public class Obstacle extends FieldElement implements Serializable
 {
+	static final long serialVersionUID = 42;
+	
+	public Obstacle(){}
+	
 	public Obstacle(int x, int y)
 	{
 		super(x, y);

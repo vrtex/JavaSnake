@@ -1,5 +1,7 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -39,6 +41,32 @@ public class Game extends Canvas
 		pieceCount = new Dimension(width / pieceSize.width, height / pieceSize.height);
 	}
 	
+	public static void insertRotatedImages(String id)
+	{
+		BufferedImage nextImage = images.get(id);
+		
+		Game.images.insert(id + "R", nextImage);
+		AffineTransform transform = AffineTransform.getRotateInstance(Math.PI / 2, nextImage.getWidth() / 2, nextImage.getHeight() / 2);
+		AffineTransformOp operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+		nextImage = operation.filter(nextImage, null);
+		Game.images.insert(id + "D", nextImage);
+		
+		nextImage = operation.filter(nextImage, null);
+		Game.images.insert(id + "L", nextImage);
+		
+		nextImage = operation.filter(nextImage, null);
+		Game.images.insert(id + "U", nextImage);
+		
+		// replace the left one
+		nextImage = Game.images.get(id + "L");
+		transform = AffineTransform.getScaleInstance(1, -1);
+		transform.translate(0, -nextImage.getHeight());
+		operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+		nextImage = operation.filter(nextImage, null);
+		Game.images.remove(id +"L");
+		Game.images.insert(id + "L", nextImage);
+	}
+	
 	public Game()
 	{
 		System.out.println(width);
@@ -70,17 +98,16 @@ public class Game extends Canvas
         GameEvent e = new GameEvent();
 	
 		// frames management values
-        long
-				now,
-				previousFrame = System.nanoTime(),
-				lastPrint = System.nanoTime(),
-				frameDelay = 17 * 1000000;
+		Clock frameTimer = new Clock(), printTimer = new Clock();
+		Time frameTime = Time.milliseconds(16), printDelay = Time.seconds(1);
         int frames = 0;
         
         // stuff for drawing
 		Graphics2D g;
 		BufferStrategy bs = getBufferStrategy();
         setBackground(Color.green);
+        frameTimer.restart();
+        printTimer.restart();
         while(true)
 		{
 			// events
@@ -89,11 +116,11 @@ public class Game extends Canvas
 				if(states.getInput(e)) continue;
 			}
 			
-			now = System.nanoTime();
-			if(now - previousFrame < frameDelay) continue;
+			
+			if(frameTimer.getElapsedTime().compareTo(frameTime) < 0) continue;
+			//if(now - previousFrame < frameDelay) continue;
 			
 			// update stuff
-			// accumulator?
 			states.update();
 			// draw background
 			g = (Graphics2D)bs.getDrawGraphics();
@@ -106,15 +133,15 @@ public class Game extends Canvas
 			g.dispose();
 			
 			
-			previousFrame = now;
+			frameTimer.restart();
 			++frames;
-			if(now - lastPrint < 1000000000) continue;
+			if(printTimer.getElapsedTime().compareTo(printDelay) < 0) continue;
 			
 			// fps display
 			System.out.printf("FPS: %d\n", frames);
-			lastPrint = now;
 			frames = 0;
 			
+			printTimer.restart();
 		}
     }
 }

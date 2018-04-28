@@ -3,15 +3,15 @@ import javafx.util.Pair;
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Random;
 
 public class GameField extends Rectangle
 {
-	private HashSet<Obstacle> obstacles = new HashSet<>();
+	private ObstacleSet obstacles = new ObstacleSet();
+//	private HashSet<Obstacle> obstacles = new HashSet<>();
 	private Food food;
 	private Random rand = new Random(System.nanoTime());
 	
@@ -45,6 +45,8 @@ public class GameField extends Rectangle
 			e.printStackTrace();
 			System.exit(543656);
 		}
+		
+		load();
 	}
 	
 	public void addObstacle(Obstacle o)
@@ -103,5 +105,50 @@ public class GameField extends Rectangle
 	public boolean containsFood(int x, int y)
 	{
 		return food.x == x && food.y == y;
+	}
+	
+	public void save()
+	{
+		
+		LinkedList<Pair<Integer, Integer>> list = new LinkedList<>();
+		for(Obstacle o : obstacles)
+		{
+			Pair p = new Pair<>(o.x, o.y);
+			list.push(p);
+		}
+		
+		try
+		{
+			FileOutputStream f = new FileOutputStream("l0.lvl");
+			ObjectOutputStream oStream = new ObjectOutputStream(f);
+			oStream.writeObject(list);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			System.exit(555);
+		}
+	}
+	
+	public void load()
+	{
+		LinkedList<Pair<Integer, Integer>> list = null;
+		try
+		{
+			FileInputStream f = new FileInputStream("l0.lvl");
+			ObjectInputStream iStream = new ObjectInputStream(f);
+			list = (LinkedList<Pair<Integer, Integer>>)iStream.readObject();
+		}
+		catch(IOException | ClassNotFoundException e)
+		{
+			e.printStackTrace();
+			System.exit(555);
+		}
+		
+		while(!list.isEmpty())
+		{
+			Pair<Integer, Integer> p = list.pop();
+			addObstacle(new Obstacle(p.getKey(), p.getValue()));
+		}
 	}
 }

@@ -15,4 +15,9 @@ public abstract class GameState
     public abstract void update();
 
     public abstract void draw(Graphics2D g);
+    
+    public void end()
+    {
+    
+    }
 }

@@ -7,6 +7,8 @@ public class FieldElement
 	public int x, y;
 	protected BufferedImage pic;
 	
+	public FieldElement(){}
+	
 	public FieldElement(int x, int y)
 	{
 		this.x = x;

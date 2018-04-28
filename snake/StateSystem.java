@@ -12,7 +12,10 @@ public class StateSystem
     public boolean getInput(GameEvent e)
     {
         if(e.event.getID() == KeyEvent.KEY_PRESSED && ((KeyEvent)e.event).getKeyCode() == KeyEvent.VK_ESCAPE)
+        {
+			if(states.peek() != null) states.peek().end();
         	clear(new PlayState(this));
+        }
         if(states.peek() == null) return false;
         return states.peek().getInput(e);
     }
