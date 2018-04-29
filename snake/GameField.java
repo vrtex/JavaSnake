@@ -15,7 +15,7 @@ public class GameField extends Rectangle
 //	private HashSet<Obstacle> obstacles = new HashSet<>();
 	private Food food, bonusFood = null;
 	private int bonusCountdown = 1;
-	Time bonusTime = Time.seconds(20.0);
+	Time bonusTime = Time.seconds(3);
 	Clock bonusTimer;
 	
 	

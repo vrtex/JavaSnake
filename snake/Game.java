@@ -52,7 +52,7 @@ public class Game extends Canvas
 		
 		Game.images.insert(id + "R", nextImage);
 		AffineTransform transform = AffineTransform.getRotateInstance(Math.PI / 2, nextImage.getWidth() / 2, nextImage.getHeight() / 2);
-		AffineTransformOp operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+		AffineTransformOp operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
 		nextImage = operation.filter(nextImage, null);
 		Game.images.insert(id + "D", nextImage);
 		
@@ -66,7 +66,7 @@ public class Game extends Canvas
 		nextImage = Game.images.get(id + "L");
 		transform = AffineTransform.getScaleInstance(1, -1);
 		transform.translate(0, -nextImage.getHeight());
-		operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BILINEAR);
+		operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
 		nextImage = operation.filter(nextImage, null);
 		Game.images.remove(id +"L");
 		Game.images.insert(id + "L", nextImage);
