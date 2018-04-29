@@ -16,7 +16,7 @@ public class GameField extends Rectangle
 	private Food food, bonusFood = null;
 	private int bonusCountdown = 1;
 	Time bonusTime = Time.seconds(20.0);
-	Clock bonusTimer = new Clock();
+	Clock bonusTimer;
 	
 	
 	public GameField(int x, int y, int w, int h)
@@ -57,6 +57,7 @@ public class GameField extends Rectangle
 		}
 		
 		load();
+		bonusTimer = new Clock();
 		bonusTimer.restart();
 		System.out.println("Bonus timer:");
 		System.out.println(bonusTime);
@@ -78,9 +79,8 @@ public class GameField extends Rectangle
 	{
 		
 		if(bonusFood == null) return;
-		if(bonusTimer.getElapsedTime().compareTo(bonusTime) < 0) return; // todo: this shit
-		
-		System.out.println("deleting food");
+		if(bonusTimer.getElapsedTime().compareTo(bonusTime) < 0) return;
+		System.out.printf("deleting food, timer: %s, time: %s\n", bonusTimer.getElapsedTime(), bonusTime);
 		System.out.println(bonusTimer);
 		bonusFood = null;
 	}

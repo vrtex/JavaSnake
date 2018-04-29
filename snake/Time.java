@@ -33,7 +33,10 @@ public class Time implements Comparable<Time>
 	
 	public int compareTo(Time o)
 	{
-		return (int)(period - o.period);
+		if(period < o.period) return -1;
+		if(period > o.period) return 1;
+		return 0;
+		//return (int)(period - o.period);
 	}
 	
 	public static Time seconds(double seconds)
