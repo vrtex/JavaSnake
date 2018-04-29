@@ -1,5 +1,3 @@
-import javafx.util.Pair;
-
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -12,6 +10,7 @@ public class Player
 {
 	
 	private int x, y;
+	private int score = 0;
 	private BufferedImage headPic;
 	private BufferedImage head[];
 	
@@ -24,6 +23,7 @@ public class Player
 	private Obstacle testObstacle;
 	private GameField field;
 	private int rotation;
+	private int newRotation;
 	
 	public Player(int x, int y, GameField f)
 	{
@@ -31,6 +31,7 @@ public class Player
 		this.x = x;
 		this.y = y;
 		rotation = 0;
+		newRotation = rotation;
 		xDir = 1;
 		yDir = 0;
 		
@@ -38,7 +39,7 @@ public class Player
 		
 		dead = false;
 		
-		head = new BufferedImage[8];
+		head = new BufferedImage[3 * 4];
 		char directions[] = {'R', 'D', 'L', 'U'};
 		String temp = "head";
 		for(int i = 0; i < 4; ++i)
@@ -50,13 +51,18 @@ public class Player
 		{
 			head[i + 4] = Game.images.get(temp + directions[i]);
 		}
+		temp = "headOpen";
+		for(int i = 0; i < 4; ++i)
+		{
+			head[i + 8] = Game.images.get(temp + directions[i]);
+		}
 		
 		headPic = head[rotation];
-		if(!Game.images.contains("tail"))
+		if(!Game.images.contains("debug"))
 		{
 			try
 			{
-				Game.images.insert("tail", ImageIO.read(new File("Res\\debug.png")));
+				Game.images.insert("debug", ImageIO.read(new File("Res\\debug.png")));
 			}
 			catch(IOException e)
 			{
@@ -71,7 +77,7 @@ public class Player
 		
 		moveTimer = new Clock();
 		
-		field.spawnFood(x, y, tail);
+		field.eatFood(x, y, tail);
 	}
 	
 	public boolean getInput(GameEvent e)
@@ -90,17 +96,21 @@ public class Player
 		if(moveTimer.getElapsedTime().compareTo(moveDelay) < 0) return;
 		moveTimer.restart();
 		move();
+		
 		testObstacle.x = x;
 		testObstacle.y = y;
 		
 		if(tail.contains(new Segment(x, y))) die();
 		if(!field.isFree(testObstacle)) die();
 		
-		if(field.containsFood(x, y))
+		if(field.containsFood(x, y) != 0)
 		{
 			++toAdd;
-			field.spawnFood(x, y, tail);
+			score += field.containsFood(x, y);
+			field.eatFood(x, y, tail);
 		}
+		
+		pickHead();
 	}
 	
 	public void draw(Graphics2D g)
@@ -115,6 +125,8 @@ public class Player
 				null, // rotation ?
 				x * Game.pieceSize.width,
 				y * Game.pieceSize.height);
+		
+		
 	}
 	
 	public void die()
@@ -133,28 +145,28 @@ public class Player
 		switch(code)
 		{
 		case KeyEvent.VK_RIGHT:
-			if(yDir == 0) return true;
+			if(rotation % 2 == 0) return true;
 			xDir = 1;
 			yDir = 0;
-			rotation = 0;
+			newRotation = 0;
 			return true;
 		case KeyEvent.VK_DOWN:
-			if(xDir == 0) return true;
+			if(rotation % 2 != 0) return true;
 			xDir = 0;
 			yDir = 1;
-			rotation = 1;
+			newRotation = 1;
 			return true;
 		case KeyEvent.VK_LEFT:
-			if(yDir == 0) return true;
+			if(rotation % 2 == 0) return true;
 			xDir = -1;
 			yDir = 0;
-			rotation = 2;
+			newRotation = 2;
 			return true;
 		case KeyEvent.VK_UP:
-			if(xDir == 0) return true;
+			if(rotation % 2 != 0) return true;
 			xDir = 0;
 			yDir = -1;
-			rotation = 3;
+			newRotation = 3;
 			return true;
 			
 		}
@@ -163,10 +175,17 @@ public class Player
 	
 	private void move()
 	{
-		tail.addFirst(new Segment(x, y));
+		tail.addFirst(new Segment(x, y, getNextImage()));
+		
+		
+		
 		x += xDir;
 		y += yDir;
 		
+		x = (x + field.size.width) % field.size.width;
+		y = (y + field.size.height) % field.size.height;
+		
+		rotation = newRotation;
 		
 		if(toAdd > 0)
 			--toAdd;
@@ -177,4 +196,71 @@ public class Player
 		
 	}
 	
+	private void pickHead()
+	{
+		if(dead)
+		{
+			headPic = head[4 + rotation];
+			return;
+		}
+		
+		if(field.containsFood((x + xDir + field.size.width) % field.size.width, (y + yDir + field.size.height) % field.size.height) != 0)
+		{
+			headPic = head[8 + rotation];
+			return;
+		}
+		
+		headPic = head[rotation];
+	}
+	
+	private BufferedImage getNextImage()
+	{
+		if(newRotation == rotation)
+		{
+			if(rotation % 2 == 1)
+			{
+				if(Game.rand.nextBoolean())
+					return Game.images.get("tailV1");
+				else
+					return Game.images.get("tailV2");
+			}
+			else
+			{
+				if(Game.rand.nextBoolean())
+					return Game.images.get("tailH1");
+				else
+					return Game.images.get("tailH2");
+			}
+			
+		}
+		switch(rotation)
+		{
+		case 2:
+			if(newRotation == 1)
+				return Game.images.get("tailRB");
+			else
+				return Game.images.get("tailRT");
+		case 3:
+			if(newRotation == 0)
+				return Game.images.get("tailRB");
+			else
+				return Game.images.get("tailLB");
+		case 0:
+			if(newRotation == 1)
+				return Game.images.get("tailLB");
+			else
+				return Game.images.get("tailLT");
+		case 1:
+			if(newRotation == 2)
+				return Game.images.get("tailLT");
+			else
+				return Game.images.get("tailRT");
+		}
+		return Game.images.get("debug");
+	}
+	
+	public int getScore()
+	{
+		return score;
+	}
 }

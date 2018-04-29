@@ -33,7 +33,7 @@ public class Time implements Comparable<Time>
 	
 	public int compareTo(Time o)
 	{
-		return (int)period - (int)o.period;
+		return (int)(period - o.period);
 	}
 	
 	public static Time seconds(double seconds)
@@ -44,5 +44,10 @@ public class Time implements Comparable<Time>
 	public static Time milliseconds(int millis)
 	{
 		return new Time(1000000 * millis);
+	}
+	
+	public String toString()
+	{
+		return String.valueOf(period);
 	}
 }

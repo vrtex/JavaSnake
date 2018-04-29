@@ -27,4 +27,9 @@ public class Clock
 	{
 		return new Time(System.nanoTime() - lastRestart);
 	}
+	
+	public String toString()
+	{
+		return "Clock with current time: " + String.valueOf(getElapsedTime().asSeconds());
+	}
 }

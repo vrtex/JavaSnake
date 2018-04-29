@@ -1,11 +1,9 @@
+import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.*;
 
 public class PlayState extends GameState
 {
@@ -18,12 +16,14 @@ public class PlayState extends GameState
 				Game.width - Game.pieceSize.width,
 				Game.height - Game.pieceSize.height);
 	private Player player;
+	private HUD hud;
 	private final int startX = 5, startY = 5;
 	
 	
 	public PlayState(StateSystem p)
     {
         super(p);
+        
 	
 //		field.addObstacle(new Obstacle(2, 3));
 //		field.addObstacle(new Obstacle(0, 0));
@@ -34,9 +34,22 @@ public class PlayState extends GameState
 		// making them pictures
 		Game.insertRotatedImages("head");
 		Game.insertRotatedImages("headDead");
+		Game.insertRotatedImages("headOpen");
 		
+		// tail pictures
+		tailPictures("tailH1");
+		tailPictures("tailH2");
+		tailPictures("tailV1");
+		tailPictures("tailV2");
+		tailPictures("tailLB");
+		tailPictures("tailLT");
+		tailPictures("tailRB");
+		tailPictures("tailRT");
+	
+	
+		player = new Player(startX, startY, field);
 		
-        player = new Player(startX, startY, field);
+		hud = new HUD(player);
     }
 
     public boolean getInput(GameEvent e)
@@ -47,22 +60,41 @@ public class PlayState extends GameState
 
     public void update()
     {
-    	// isDead?
+    	// todo isDead?
+		field.update();
     	player.update();
+		hud.update();
     }
 
     public void draw(Graphics2D g)
     {
-    	g.setColor(Color.blue);
-        g.fillRect(0, 0, Game.pieceSize.width / 2, Game.pieceSize.height);
 		field.draw(g);
 		g.translate(field.x, field.y);
         player.draw(g);
 		g.translate(-field.x, -field.y);
+		hud.draw(g);
     }
     
     public void end()
 	{
 		field.save();
+	}
+	
+	public static void tailPictures(String id)
+	{
+		BufferedImage toAdd = null;
+		if(Game.images.contains(id)) return;
+		try
+		{
+			File f = new File("Res\\tail\\" + id + ".png");
+			toAdd = ImageIO.read(f);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			System.exit(345);
+		}
+		Game.images.insert(id, toAdd);
+		
 	}
 }

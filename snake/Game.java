@@ -6,6 +6,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.Random;
 
 public class Game extends Canvas
 {
@@ -13,6 +14,7 @@ public class Game extends Canvas
 	public static final Dimension pieceSize;
 	public static final int width, height;
 	public static final Dimension pieceCount;
+	public static final Random rand;
 	
 	private Window w;
 	private StateSystem states;
@@ -20,6 +22,7 @@ public class Game extends Canvas
 	static
 	{
 		BufferedImage headPic = null;
+		rand = new Random(System.nanoTime());
 		
 		try
 		{
@@ -27,6 +30,8 @@ public class Game extends Canvas
 			images.insert("headDead", headPic);
 			headPic = ImageIO.read(new File("Res\\head.png"));
 			images.insert("head", headPic);
+			headPic = ImageIO.read(new File("Res\\headOpen.png"));
+			images.insert("headOpen", headPic);
 		}
 		catch (IOException e)
 		{
@@ -135,6 +140,7 @@ public class Game extends Canvas
 			
 			frameTimer.restart();
 			++frames;
+			
 			if(printTimer.getElapsedTime().compareTo(printDelay) < 0) continue;
 			
 			// fps display

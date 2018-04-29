@@ -9,6 +9,15 @@ public class Food extends FieldElement
 		pic = Game.images.get("food");
 	}
 	
+	public Food(int x, int y, boolean bonus)
+	{
+		super(x, y);
+		if(bonus)
+			pic = Game.images.get("bonusFood");
+		else
+			pic = Game.images.get("food");
+	}
+	
 	
 	public boolean equals(Object o)
 	{

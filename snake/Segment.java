@@ -12,7 +12,14 @@ public class Segment
 		this.x = x;
 		this.y = y;
 		
-		pic = Game.images.get("tail");
+		pic = Game.images.get("debug");
+	}
+	
+	
+	public Segment(int x, int y, BufferedImage img)
+	{
+		this(x, y);
+		pic = img;
 	}
 	
 	public void draw(Graphics2D g)

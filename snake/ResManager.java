@@ -21,7 +21,7 @@ public class ResManager<T>
     {
         if(!content.containsKey(id))
         {
-        	System.out.printf("Element not found: %s", id);
+        	System.out.printf("Element not found: %s\n", id);
             throw new NoSuchElementException();
         }
         return content.get(id);

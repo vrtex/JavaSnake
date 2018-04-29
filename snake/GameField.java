@@ -11,9 +11,12 @@ import java.util.Random;
 public class GameField extends Rectangle
 {
 	private ObstacleSet obstacles = new ObstacleSet();
+	public final Dimension size;
 //	private HashSet<Obstacle> obstacles = new HashSet<>();
-	private Food food;
-	private Random rand = new Random(System.nanoTime());
+	private Food food, bonusFood = null;
+	private int bonusCountdown = 1;
+	Time bonusTime = Time.seconds(20.0);
+	Clock bonusTimer = new Clock();
 	
 	
 	public GameField(int x, int y, int w, int h)
@@ -23,6 +26,7 @@ public class GameField extends Rectangle
 		this.y = y;
 		width = w;
 		height = h;
+		size = new Dimension(width / Game.pieceSize.width, height / Game.pieceSize.height);
 		
 		BufferedImage nextImage;
 		try
@@ -39,6 +43,12 @@ public class GameField extends Rectangle
 				Game.images.insert("food", nextImage);
 			}
 			
+			if(!Game.images.contains("bonusFood"))
+			{
+				nextImage = ImageIO.read(new File("Res\\bonusFood.png"));
+				Game.images.insert("bonusFood", nextImage);
+			}
+			
 		}
 		catch(IOException e)
 		{
@@ -47,6 +57,9 @@ public class GameField extends Rectangle
 		}
 		
 		load();
+		bonusTimer.restart();
+		System.out.println("Bonus timer:");
+		System.out.println(bonusTime);
 	}
 	
 	public void addObstacle(Obstacle o)
@@ -59,6 +72,17 @@ public class GameField extends Rectangle
 	{
 		if(obstacles.size() == 0) return false;
 		return !obstacles.contains(place);
+	}
+	
+	public void update()
+	{
+		
+		if(bonusFood == null) return;
+		if(bonusTimer.getElapsedTime().compareTo(bonusTime) < 0) return; // todo: this shit
+		
+		System.out.println("deleting food");
+		System.out.println(bonusTimer);
+		bonusFood = null;
 	}
 	
 	public void draw(Graphics2D g)
@@ -76,35 +100,78 @@ public class GameField extends Rectangle
 		
 		if(food != null)
 			food.draw(g);
+		if(bonusFood != null)
+			bonusFood.draw(g);
 		
 		g.translate(-x, -y);
 		
 	}
 	
-	public Pair<Integer, Integer> getPosition()
+	
+	public void eatFood(int x, int y, LinkedList<Segment> tail)
 	{
-		return new Pair<>(x, y);
+		if(containsFood(x, y) == 1 || food == null)
+		{
+			spawnFood(x, y, tail);
+			--bonusCountdown;
+		}
+		
+		else if(containsFood(x, y) == 5)
+			bonusFood = null;
 	}
 	
-	public Dimension getSize()
+	private void spawnFood(int x, int y, LinkedList<Segment> tail)
 	{
-		return new Dimension(width, height);
-	}
-	
-	public void spawnFood(int x, int y, LinkedList<Segment> tail)
-	{
+		
 		int fx, fy;
 		do
 		{
-			fx = rand.nextInt(Game.pieceCount.width - 1);
-			fy = rand.nextInt(Game.pieceCount.height - 1);
-		}while((fx == x && fy == y) || tail.contains(new Segment(fx, fy)) || obstacles.contains(new Obstacle(fx, fy)));
-		food = new Food(fx, fy);
+			fx = Game.rand.nextInt(Game.pieceCount.width - 1);
+			fy = Game.rand.nextInt(Game.pieceCount.height - 1);
+		}while(
+				(
+						fx == x && fy == y) ||
+						tail.contains(new Segment(fx, fy)) ||
+						obstacles.contains(new Obstacle(fx, fy)) ||
+						containsFood(fx, fy) != 0
+				);
+		food = new Food(fx, fy, false);
+		System.out.printf("bonus countown: %d\n", bonusCountdown);
+		if(bonusCountdown != 0) return;
+		spawnBonus(x, y, tail);
 	}
 	
-	public boolean containsFood(int x, int y)
+	private void spawnBonus(int x, int y, LinkedList<Segment> tail)
 	{
-		return food.x == x && food.y == y;
+		bonusCountdown = 5;
+		int fx, fy;
+		do
+		{
+			fx = Game.rand.nextInt(Game.pieceCount.width - 1);
+			fy = Game.rand.nextInt(Game.pieceCount.height - 1);
+		}while(
+				(
+						fx == x && fy == y) ||
+						tail.contains(new Segment(fx, fy)) ||
+						obstacles.contains(new Obstacle(fx, fy)) ||
+						containsFood(fx, fy) != 0
+				);
+		bonusFood = new Food(fx, fy, true);
+		System.out.printf("spwaning bonus at %d %d\n", fx, fy);
+		bonusTimer.restart();
+	}
+	
+	public int containsFood(int x, int y)
+	{
+		if(food != null)
+		if(food.x == x && food.y == y)
+			return 1;
+		
+		if(bonusFood != null)
+		if(bonusFood.x == x && bonusFood.y == y)
+			return 5;
+		
+		return 0;
 	}
 	
 	public void save()
