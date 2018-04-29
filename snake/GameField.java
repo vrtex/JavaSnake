@@ -12,7 +12,7 @@ public class GameField extends Rectangle
 {
 	private ObstacleSet obstacles = new ObstacleSet();
 	public final Dimension size;
-//	private HashSet<Obstacle> obstacles = new HashSet<>();
+	//	private HashSet<Obstacle> obstacles = new HashSet<>();
 	private Food food, bonusFood = null;
 	private int bonusCountdown = 1;
 	Time bonusTime = Time.seconds(3);
@@ -114,9 +114,7 @@ public class GameField extends Rectangle
 		{
 			spawnFood(x, y, tail);
 			--bonusCountdown;
-		}
-		
-		else if(containsFood(x, y) == 5)
+		} else if(containsFood(x, y) == 5)
 			bonusFood = null;
 	}
 	
@@ -128,7 +126,7 @@ public class GameField extends Rectangle
 		{
 			fx = Game.rand.nextInt(Game.pieceCount.width - 1);
 			fy = Game.rand.nextInt(Game.pieceCount.height - 1);
-		}while(
+		} while(
 				(
 						fx == x && fy == y) ||
 						tail.contains(new Segment(fx, fy)) ||
@@ -149,7 +147,7 @@ public class GameField extends Rectangle
 		{
 			fx = Game.rand.nextInt(Game.pieceCount.width - 1);
 			fy = Game.rand.nextInt(Game.pieceCount.height - 1);
-		}while(
+		} while(
 				(
 						fx == x && fy == y) ||
 						tail.contains(new Segment(fx, fy)) ||
@@ -164,12 +162,12 @@ public class GameField extends Rectangle
 	public int containsFood(int x, int y)
 	{
 		if(food != null)
-		if(food.x == x && food.y == y)
-			return 1;
+			if(food.x == x && food.y == y)
+				return 1;
 		
 		if(bonusFood != null)
-		if(bonusFood.x == x && bonusFood.y == y)
-			return 5;
+			if(bonusFood.x == x && bonusFood.y == y)
+				return 5;
 		
 		return 0;
 	}
@@ -217,5 +215,7 @@ public class GameField extends Rectangle
 			Pair<Integer, Integer> p = list.pop();
 			addObstacle(new Obstacle(p.getKey(), p.getValue()));
 		}
+		
+		
 	}
 }
