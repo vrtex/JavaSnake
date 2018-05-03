@@ -8,14 +8,20 @@ public class StateSystem
     private LinkedList<GameState> states = new LinkedList<>();
     private GameState toAdd = null;
     private int toDelete = 0;
+    private Graphics2D graphics;
+    
+    public StateSystem(Graphics2D g)
+	{
+		graphics = g;
+	}
 
     public boolean getInput(GameEvent e)
     {
-        if(e.event.getID() == KeyEvent.KEY_PRESSED && ((KeyEvent)e.event).getKeyCode() == KeyEvent.VK_ESCAPE)
-        {
-			if(states.peek() != null) states.peek().end();
-        	clear(new PlayState(this));
-        }
+//        if(e.event.getID() == KeyEvent.KEY_PRESSED && ((KeyEvent)e.event).getKeyCode() == KeyEvent.VK_ESCAPE)
+//        {
+//			if(states.peek() != null) states.peek().end();
+//        	clear(new MainMenu(this, graphics));
+//        }
         if(states.peek() == null) return false;
         return states.peek().getInput(e);
     }
@@ -39,6 +45,7 @@ public class StateSystem
 
     public void draw(Graphics2D g)
     {
+    	graphics = g;
         for(int i = states.size() - 1; i >= 0; --i)
         {
             states.get(i).draw(g);

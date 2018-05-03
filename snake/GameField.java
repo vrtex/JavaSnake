@@ -15,7 +15,7 @@ public class GameField extends Rectangle
 	//	private HashSet<Obstacle> obstacles = new HashSet<>();
 	private Food food, bonusFood = null;
 	private int bonusCountdown = 1;
-	Time bonusTime = Time.seconds(3);
+	Time bonusTime = Time.seconds(15);
 	Clock bonusTimer;
 	
 	
@@ -59,8 +59,6 @@ public class GameField extends Rectangle
 		load();
 		bonusTimer = new Clock();
 		bonusTimer.restart();
-		System.out.println("Bonus timer:");
-		System.out.println(bonusTime);
 	}
 	
 	public void addObstacle(Obstacle o)
@@ -80,8 +78,6 @@ public class GameField extends Rectangle
 		
 		if(bonusFood == null) return;
 		if(bonusTimer.getElapsedTime().compareTo(bonusTime) < 0) return;
-		System.out.printf("deleting food, timer: %s, time: %s\n", bonusTimer.getElapsedTime(), bonusTime);
-		System.out.println(bonusTimer);
 		bonusFood = null;
 	}
 	
@@ -134,7 +130,6 @@ public class GameField extends Rectangle
 						containsFood(fx, fy) != 0
 				);
 		food = new Food(fx, fy, false);
-		System.out.printf("bonus countown: %d\n", bonusCountdown);
 		if(bonusCountdown != 0) return;
 		spawnBonus(x, y, tail);
 	}
@@ -155,7 +150,6 @@ public class GameField extends Rectangle
 						containsFood(fx, fy) != 0
 				);
 		bonusFood = new Food(fx, fy, true);
-		System.out.printf("spwaning bonus at %d %d\n", fx, fy);
 		bonusTimer.restart();
 	}
 	

@@ -79,11 +79,17 @@ public class Game extends Canvas
 		
 		setSize(width, height);
 		
-		states = new StateSystem();
 		
 		w = new Window(700, 700, this);
+		GameInput listener = new GameInput(w);
+		this.addKeyListener(listener);
+		this.addMouseListener(listener);
+		this.addMouseMotionListener(listener);
+		this.requestFocus();
+		
 		//requestFocus();
 		createBufferStrategy(3);
+		states = new StateSystem((Graphics2D)getBufferStrategy().getDrawGraphics());
 	}
 	
     public static void main(String args[])
@@ -98,7 +104,6 @@ public class Game extends Canvas
         System.out.println("Game start");
 
 
-        states.addRequest(new PlayState(states));
         
         GameEvent e = new GameEvent();
 	
@@ -113,6 +118,8 @@ public class Game extends Canvas
         setBackground(Color.green);
         frameTimer.restart();
         printTimer.restart();
+//        states.addRequest(new PlayState(states));
+		states.addRequest(new MainMenu(states, (Graphics2D)bs.getDrawGraphics()));
         while(true)
 		{
 			// events

@@ -1,5 +1,8 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -20,9 +23,11 @@ public class PlayState extends GameState
 	private final int startX = 5, startY = 5;
 	
 	
-	public PlayState(StateSystem p)
+	public PlayState(StateSystem p, int diff)
     {
         super(p);
+        
+        System.out.printf("Starting game with diff: %d\n", diff);
         
 	
 //		field.addObstacle(new Obstacle(2, 3));
@@ -55,6 +60,15 @@ public class PlayState extends GameState
     public boolean getInput(GameEvent e)
     {
     	if(player.getInput(e)) return true;
+    	if(e.event.getID() == KeyEvent.KEY_PRESSED)
+		{
+			KeyEvent kEvent = (KeyEvent)e.event;
+			if(kEvent.getKeyCode() == KeyEvent.VK_ESCAPE)
+			{
+				parent.deleteRequest(1);
+				return true;
+			}
+		}
         return false;
     }
 
