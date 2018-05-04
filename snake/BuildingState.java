@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 
@@ -22,6 +23,8 @@ public class BuildingState extends GameState
 			return mouseMoved((MouseEvent)e.event);
 		if(e.event.getID() == MouseEvent.MOUSE_CLICKED)
 			return mouseClicked();
+		if(e.event.getID() == KeyEvent.KEY_PRESSED)
+			return keyPressed((KeyEvent)e.event);
 		return false;
 	}
 	
@@ -39,13 +42,25 @@ public class BuildingState extends GameState
 	{
 		if(blank.isFree(new Obstacle(mouseX, mouseY)))
 			blank.addObstacle(new Obstacle(mouseX, mouseY));
+		
 		return true;
+	}
+	
+	private boolean keyPressed(KeyEvent e)
+	{
+		switch(e.getKeyCode())
+		{
+		case KeyEvent.VK_ENTER:
+			blank.save(55);
+			return true;
+		}
+		return false;
 	}
 	
 	@Override
 	public void update()
 	{
-		System.out.printf("currentX: %d, currentY: %d\n", mouseX, mouseY);
+	
 	}
 	
 	@Override

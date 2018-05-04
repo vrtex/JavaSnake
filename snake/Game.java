@@ -118,9 +118,9 @@ public class Game extends Canvas
         setBackground(Color.green);
         frameTimer.restart();
         printTimer.restart();
-//      states.addRequest(new PlayState(states, 1));
-//		states.addRequest(new MainMenu(states, (Graphics2D)bs.getDrawGraphics()));
-		states.addRequest(new BuildingState(states));
+//        states.addRequest(new PlayState(states, 1));
+		states.addRequest(new MainMenu(states, (Graphics2D)bs.getDrawGraphics()));
+//		states.addRequest(new BuildingState(states));
         while(true)
 		{
 			// events

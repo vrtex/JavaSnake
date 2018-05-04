@@ -27,7 +27,6 @@ public class PlayState extends GameState
     {
         super(p);
         
-        field = new GameField(0);
         
 //        field.save(0);
 //        System.exit(33);
