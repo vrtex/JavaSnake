@@ -1,3 +1,5 @@
+import javafx.util.Pair;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.event.KeyEvent;
@@ -179,13 +181,18 @@ public class Player
 	{
 		tail.addFirst(new Segment(x, y, getNextImage()));
 		
-		
-		
 		x += xDir;
 		y += yDir;
 		
 		x = (x + field.size.width) % field.size.width;
 		y = (y + field.size.height) % field.size.height;
+		
+		Pair<Integer, Integer> destination = field.teleportsFrom(x, y);
+		if(destination != null)
+		{
+			x = destination.getKey();
+			y = destination.getValue();
+		}
 		
 		rotation = newRotation;
 		

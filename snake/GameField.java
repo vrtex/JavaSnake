@@ -11,13 +11,17 @@ import java.util.Random;
 public class GameField extends Rectangle
 {
 	private ObstacleSet obstacles = new ObstacleSet();
-	public final Dimension size;
+	private LinkedList<Teleporter> teleporters = new LinkedList<>();
+	
+	public Dimension size;
+	
 	//	private HashSet<Obstacle> obstacles = new HashSet<>();
 	private Food food, bonusFood = null;
 	private int bonusCountdown = 1;
-	Time bonusTime = Time.seconds(15);
-	Clock bonusTimer;
-	
+	private Time bonusTime = Time.seconds(15);
+	private Clock bonusTimer;
+	private char teleporterColors[] = new char[] {'R', 'B', 'G'};
+	private int nextTeleporter = 0;
 	
 	public GameField(int x, int y, int w, int h)
 	{
@@ -64,28 +68,7 @@ public class GameField extends Rectangle
 	
 	public GameField(int n) // loading from file
 	{
-		LinkedList<Pair<Integer, Integer>> list = load(n);
-		
-		
-		Pair<Integer, Integer> pos = list.removeFirst();
-		Pair<Integer, Integer> size = list.removeFirst();
-//		System.out.printf("pos: %d, %d\n size: %d, %d\n", pos.getKey(), pos.getValue(), size.getKey(), size.getValue());
-		//System.exit(32332);
-		
-		x = pos.getKey();
-		y = pos.getValue();
-		
-//		this.size = new Dimension(size.getKey(), size.getValue());
-		
-		width = size.getKey();
-		height = size.getValue();
-		this.size = new Dimension(width / Game.pieceSize.width, height / Game.pieceSize.height);
-		
-		while(!list.isEmpty())
-		{
-			Pair<Integer, Integer> p = list.pop();
-			addObstacle(new Obstacle(p.getKey(), p.getValue()));
-		}
+		load(n);
 		
 		loadFieldImages();
 		
@@ -99,6 +82,28 @@ public class GameField extends Rectangle
 	{
 		if(obstacles.contains(o)) return;
 		obstacles.add(o);
+	}
+	
+	public void addTeleporter(int xa, int ya, int xb, int yb) throws RuntimeException
+	{
+		if(nextTeleporter == teleporterColors.length - 1) throw new RuntimeException();
+		++nextTeleporter;
+		
+		Teleporter toAdd = new Teleporter(xa, ya, xb, yb, teleporterColors[nextTeleporter]);
+		System.out.println(toAdd);
+		if(teleporters.contains(toAdd)) return;
+		teleporters.add(toAdd);
+	}
+	
+	public Pair<Integer, Integer> teleportsFrom(int x, int y)
+	{
+		Pair<Integer, Integer> exit = null;
+		for(Teleporter t : teleporters)
+		{
+			exit = t.getExit(x, y);
+			if(exit != null) break;
+		}
+		return exit;
 	}
 	
 	public boolean isFree(Obstacle place)
@@ -126,6 +131,11 @@ public class GameField extends Rectangle
 		for(Obstacle o : obstacles)
 		{
 			o.draw(g);
+		}
+		
+		for(Teleporter t : teleporters)
+		{
+			t.draw(g);
 		}
 		
 		if(food != null)
@@ -233,13 +243,14 @@ public class GameField extends Rectangle
 	{
 		
 		LinkedList<Pair<Integer, Integer>> list = new LinkedList<>();
+		LinkedList<Integer> teleporterList = new LinkedList<>();
 		
-		Pair pos = new Pair<>(x, y);
-		list.addLast(pos);
-		System.out.printf("pushing position: %d, %d\n", pos.getKey(), pos.getValue());
-		Pair size = new Pair<>(width, height);
-		list.addLast(size);
-		System.out.printf("pushing size: %d, %d\n", size.getKey(), size.getValue());
+//		Pair pos = new Pair<>(x, y);
+//		list.addLast(pos);
+//		System.out.printf("pushing position: %d, %d\n", pos.getKey(), pos.getValue());
+//		Pair size = new Pair<>(width, height);
+//		list.addLast(size);
+//		System.out.printf("pushing size: %d, %d\n", size.getKey(), size.getValue());
 		
 		
 		for(Obstacle o : obstacles)
@@ -248,11 +259,23 @@ public class GameField extends Rectangle
 			list.addLast(p);
 		}
 		
+		for(Teleporter t : teleporters)
+		{
+			t.getInfo(teleporterList);
+		}
+		
+		FieldInfo toSave = new FieldInfo(x, y, width, height, size, list, teleporterList);
+		
 		try
 		{
-			FileOutputStream f = new FileOutputStream("l" + String.valueOf(n) + ".lvl");
+			FileOutputStream f = new FileOutputStream("lvl\\l" + String.valueOf(n) + ".lvl");
 			ObjectOutputStream oStream = new ObjectOutputStream(f);
-			oStream.writeObject(list);
+			oStream.writeObject(toSave);
+//			oStream.writeObject(new Pair<>(x, y));
+//			oStream.writeObject(size);
+//
+//			oStream.writeObject(list);
+//			oStream.writeObject(teleporterList);
 		}
 		catch(IOException e)
 		{
@@ -261,6 +284,7 @@ public class GameField extends Rectangle
 		}
 	}
 	
+	@Deprecated
 	public void load()
 	{
 		LinkedList<Pair<Integer, Integer>> list = null;
@@ -289,11 +313,21 @@ public class GameField extends Rectangle
 	private LinkedList<Pair<Integer, Integer>> load(int n)
 	{
 		LinkedList<Pair<Integer, Integer>> list = null;
+		LinkedList<Integer> teleporterList = null;
+		System.out.println("loading");
+		
+		FieldInfo loaded = null;
+		
 		try
 		{
-			FileInputStream f = new FileInputStream("l" + String.valueOf(n) + ".lvl");
+			FileInputStream f = new FileInputStream("lvl\\l" + String.valueOf(n) + ".lvl");
 			ObjectInputStream iStream = new ObjectInputStream(f);
-			list = (LinkedList<Pair<Integer, Integer>>)iStream.readObject();
+			loaded = (FieldInfo)iStream.readObject();
+			
+//			pos = (Pair<Integer, Integer>)iStream.readObject();
+//			s = (Dimension)iStream.readObject();
+//			list = (LinkedList<Pair<Integer, Integer>>)iStream.readObject();
+//			teleporterList = (LinkedList<Integer>)iStream.readObject();
 		}
 		catch(IOException | ClassNotFoundException e)
 		{
@@ -301,7 +335,41 @@ public class GameField extends Rectangle
 			System.exit(555);
 		}
 		
+		if(loaded == null) throw new NullPointerException();
+		
+		x = loaded.x;
+		y = loaded.y;
+		width = loaded.width;
+		height = loaded.height;
+		size = loaded.size;
+		
+		list = loaded.obstacles;
+		teleporterList = loaded.teleporters;
+		
+		
+		
 		if(list.size() < 2) throw new RuntimeException();
+		if(teleporterList.size() % 4 != 0) throw new RuntimeException();
+		
+		
+		while(!list.isEmpty())
+		{
+			Pair<Integer, Integer> p = list.pop();
+			addObstacle(new Obstacle(p.getKey(), p.getValue()));
+		}
+		
+		
+		while(!teleporterList.isEmpty())
+		{
+			int xa, xb, ya, yb;
+			xa = teleporterList.removeFirst();
+			ya = teleporterList.removeFirst();
+			xb = teleporterList.removeFirst();
+			yb = teleporterList.removeFirst();
+			
+			addTeleporter(xa, ya, xb, yb);
+		}
+		
 		return list;
 	}
 	
@@ -328,6 +396,18 @@ public class GameField extends Rectangle
 				Game.images.insert("bonusFood", nextImage);
 			}
 			
+			
+			if(!Game.images.contains("teleporter"))
+			{
+				BufferedImage baseTeleporter = ImageIO.read(new File("Res\\teleporter.png"));
+				Game.images.insert("teleporter", baseTeleporter);
+				nextImage = Game.dye(baseTeleporter, Color.RED);
+				Game.images.insert("teleporterR", nextImage);
+				nextImage = Game.dye(baseTeleporter, Color.blue);
+				Game.images.insert("teleporterB", nextImage);
+				nextImage = Game.dye(baseTeleporter, Color.green);
+				Game.images.insert("teleporterG", nextImage);
+			}
 		}
 		catch(IOException e)
 		{

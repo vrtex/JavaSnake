@@ -72,6 +72,33 @@ public class Game extends Canvas
 		Game.images.insert(id + "L", nextImage);
 	}
 	
+	public static BufferedImage dye(BufferedImage src, Color col)
+	{
+		int w = src.getWidth();
+		int h = src.getHeight();
+		BufferedImage toReturn = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage swirl = null;
+		try
+		{
+			swirl = ImageIO.read(new File("Res\\swirl.png"));
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			System.exit(33);
+		}
+		Graphics2D g = toReturn.createGraphics();
+		g.drawImage(src, null, 0, 0);
+		Composite transparency = AlphaComposite.getInstance(AlphaComposite.SRC_ATOP, 0.75f);
+		g.setComposite(transparency);
+		g.setColor(col);
+		g.fillRect(0, 0, w, h);
+		g.setComposite(AlphaComposite.getInstance(AlphaComposite.XOR));
+		g.drawImage(swirl, null, 0, 0);
+		g.dispose();
+		return toReturn;
+	}
+	
 	public Game()
 	{
 		System.out.println(width);

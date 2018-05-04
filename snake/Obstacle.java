@@ -15,7 +15,7 @@ public class Obstacle extends FieldElement implements Serializable
 	public Obstacle(int x, int y)
 	{
 		super(x, y);
-			pic = Game.images.get("block");
+		pic = Game.images.get("block");
 	}
 	
 	

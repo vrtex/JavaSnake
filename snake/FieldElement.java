@@ -17,7 +17,8 @@ public class FieldElement
 	
 	public void draw(Graphics2D g)
 	{
-		g.drawImage(pic, x * Game.pieceSize.width, y * Game.pieceSize.height, null);
+		if(pic != null)
+			g.drawImage(pic, x * Game.pieceSize.width, y * Game.pieceSize.height, null);
 	}
 	
 	@Override

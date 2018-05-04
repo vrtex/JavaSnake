@@ -27,6 +27,9 @@ public class PlayState extends GameState
     {
         super(p);
         
+        field = new GameField(15);
+        
+        
         
 //        field.save(0);
 //        System.exit(33);
@@ -36,6 +39,12 @@ public class PlayState extends GameState
 //		field.addObstacle(new Obstacle(0, 1));
 //		field.addObstacle(new Obstacle(0, 2));
 //		field.addObstacle(new Obstacle(0, 3));
+//
+//		field.addTeleporter(5, 5, 8, 8);
+//
+//		field.save(15);
+//		System.exit(15);
+		
 		
 		// making them pictures
 		Game.insertRotatedImages("head");
