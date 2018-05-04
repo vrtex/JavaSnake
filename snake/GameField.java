@@ -21,45 +21,79 @@ public class GameField extends Rectangle
 	
 	public GameField(int x, int y, int w, int h)
 	{
-		super(w, h);
 		this.x = x;
 		this.y = y;
 		width = w;
 		height = h;
 		size = new Dimension(width / Game.pieceSize.width, height / Game.pieceSize.height);
 		
-		BufferedImage nextImage;
-		try
-		{
-			if(!Game.images.contains("block"))
-			{
-				nextImage = ImageIO.read(new File("Res\\block.png"));
-				Game.images.insert("block", nextImage);
-			}
-			
-			if(!Game.images.contains("food"))
-			{
-				nextImage = ImageIO.read(new File("Res\\food.png"));
-				Game.images.insert("food", nextImage);
-			}
-			
-			if(!Game.images.contains("bonusFood"))
-			{
-				nextImage = ImageIO.read(new File("Res\\bonusFood.png"));
-				Game.images.insert("bonusFood", nextImage);
-			}
-			
-		}
-		catch(IOException e)
-		{
-			e.printStackTrace();
-			System.exit(543656);
-		}
+		loadFieldImages();
 		
-		load();
+//		BufferedImage nextImage;
+//		try
+//		{
+//			if(!Game.images.contains("block"))
+//			{
+//				nextImage = ImageIO.read(new File("Res\\block.png"));
+//				Game.images.insert("block", nextImage);
+//			}
+//
+//			if(!Game.images.contains("food"))
+//			{
+//				nextImage = ImageIO.read(new File("Res\\food.png"));
+//				Game.images.insert("food", nextImage);
+//			}
+//
+//			if(!Game.images.contains("bonusFood"))
+//			{
+//				nextImage = ImageIO.read(new File("Res\\bonusFood.png"));
+//				Game.images.insert("bonusFood", nextImage);
+//			}
+//
+//		}
+//		catch(IOException e)
+//		{
+//			e.printStackTrace();
+//			System.exit(543656);
+//		}
+		
+		//load();
 		bonusTimer = new Clock();
 		bonusTimer.restart();
 	}
+	
+	public GameField(int n) // loading from file
+	{
+		LinkedList<Pair<Integer, Integer>> list = load(n);
+		
+		
+		Pair<Integer, Integer> pos = list.removeFirst();
+		Pair<Integer, Integer> size = list.removeFirst();
+//		System.out.printf("pos: %d, %d\n size: %d, %d\n", pos.getKey(), pos.getValue(), size.getKey(), size.getValue());
+		//System.exit(32332);
+		
+		x = pos.getKey();
+		y = pos.getValue();
+		
+//		this.size = new Dimension(size.getKey(), size.getValue());
+		
+		width = size.getKey();
+		height = size.getValue();
+		this.size = new Dimension(width / Game.pieceSize.width, height / Game.pieceSize.height);
+		
+		while(!list.isEmpty())
+		{
+			Pair<Integer, Integer> p = list.pop();
+			addObstacle(new Obstacle(p.getKey(), p.getValue()));
+		}
+		
+		loadFieldImages();
+		
+		
+		bonusTimer = new Clock();
+		bonusTimer.restart();
+	}
+	
 	
 	public void addObstacle(Obstacle o)
 	{
@@ -69,7 +103,7 @@ public class GameField extends Rectangle
 	
 	public boolean isFree(Obstacle place)
 	{
-		if(obstacles.size() == 0) return false;
+		if(obstacles.size() == 0) return true;
 		return !obstacles.contains(place);
 	}
 	
@@ -170,15 +204,53 @@ public class GameField extends Rectangle
 	{
 		
 		LinkedList<Pair<Integer, Integer>> list = new LinkedList<>();
+		
+		Pair pos = new Pair<>(x, y);
+		list.addLast(pos);
+		Pair size = new Pair<>(getSize().width, getSize().height);
+		list.addLast(size);
+		
 		for(Obstacle o : obstacles)
 		{
 			Pair p = new Pair<>(o.x, o.y);
-			list.push(p);
+			list.addLast(p);
 		}
 		
 		try
 		{
 			FileOutputStream f = new FileOutputStream("l0.lvl");
+			ObjectOutputStream oStream = new ObjectOutputStream(f);
+			oStream.writeObject(list);
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			System.exit(555);
+		}
+	}
+	
+	public void save(int n)
+	{
+		
+		LinkedList<Pair<Integer, Integer>> list = new LinkedList<>();
+		
+		Pair pos = new Pair<>(x, y);
+		list.addLast(pos);
+		System.out.printf("pushing position: %d, %d\n", pos.getKey(), pos.getValue());
+		Pair size = new Pair<>(width, height);
+		list.addLast(size);
+		System.out.printf("pushing size: %d, %d\n", size.getKey(), size.getValue());
+		
+		
+		for(Obstacle o : obstacles)
+		{
+			Pair p = new Pair<>(o.x, o.y);
+			list.addLast(p);
+		}
+		
+		try
+		{
+			FileOutputStream f = new FileOutputStream("l" + String.valueOf(n) + ".lvl");
 			ObjectOutputStream oStream = new ObjectOutputStream(f);
 			oStream.writeObject(list);
 		}
@@ -211,5 +283,56 @@ public class GameField extends Rectangle
 		}
 		
 		
+	}
+	
+	
+	private LinkedList<Pair<Integer, Integer>> load(int n)
+	{
+		LinkedList<Pair<Integer, Integer>> list = null;
+		try
+		{
+			FileInputStream f = new FileInputStream("l" + String.valueOf(n) + ".lvl");
+			ObjectInputStream iStream = new ObjectInputStream(f);
+			list = (LinkedList<Pair<Integer, Integer>>)iStream.readObject();
+		}
+		catch(IOException | ClassNotFoundException e)
+		{
+			e.printStackTrace();
+			System.exit(555);
+		}
+		
+		if(list.size() < 2) throw new RuntimeException();
+		return list;
+	}
+	
+	public static void loadFieldImages()
+	{
+		BufferedImage nextImage;
+		try
+		{
+			if(!Game.images.contains("block"))
+			{
+				nextImage = ImageIO.read(new File("Res\\block.png"));
+				Game.images.insert("block", nextImage);
+			}
+			
+			if(!Game.images.contains("food"))
+			{
+				nextImage = ImageIO.read(new File("Res\\food.png"));
+				Game.images.insert("food", nextImage);
+			}
+			
+			if(!Game.images.contains("bonusFood"))
+			{
+				nextImage = ImageIO.read(new File("Res\\bonusFood.png"));
+				Game.images.insert("bonusFood", nextImage);
+			}
+			
+		}
+		catch(IOException e)
+		{
+			e.printStackTrace();
+			System.exit(543656);
+		}
 	}
 }

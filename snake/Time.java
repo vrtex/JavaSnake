@@ -41,6 +41,7 @@ public class Time implements Comparable<Time>
 	
 	public static Time seconds(double seconds)
 	{
+		if(seconds < 0) throw new IllegalArgumentException();
 		return new Time((long)(NANOS_IN_SECOND * seconds));
 	}
 	

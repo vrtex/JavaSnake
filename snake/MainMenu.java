@@ -11,7 +11,8 @@ public class MainMenu extends GameState
 	// difficulty
 	// exit
 	
-	private final int startPosition = 0, exitPosition = 2;
+	private final int optionsCount = 3;
+	private final int startPosition = 0, exitPosition = optionsCount - 1;
 	private int currentOption;
 	
 	public MainMenu(StateSystem p, Graphics2D g)
@@ -20,7 +21,8 @@ public class MainMenu extends GameState
 		
 		Font f = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts()[0];
 		Font font = new Font(f.getName(), Font.PLAIN, 32);
-		options = new MenuOption[3];
+		
+		options = new MenuOption[optionsCount];
 		
 		int x, y;
 		
@@ -44,17 +46,17 @@ public class MainMenu extends GameState
 	public boolean getInput(GameEvent e)
 	{
 		
-		// kkey pressed:
+		// key pressed:
 		if(e.event.getID() == KeyEvent.KEY_PRESSED)
 		{
 			KeyEvent kEvent = (KeyEvent)e.event;
-			
 			boolean validKey = keyPressed(kEvent);
-			
-			
 			options[currentOption].activate();
+			
+			
 			if(!validKey)
 				validKey = options[currentOption].getInput(e);
+			
 			return validKey;
 		}
 		
@@ -62,46 +64,11 @@ public class MainMenu extends GameState
 		if(e.event.getID() == MouseEvent.MOUSE_MOVED)
 		{
 			MouseEvent mEvent = (MouseEvent)e.event;
-			int nextOption = -1;
-			int i = 0;
-			for(MenuOption o : options)
-			{
-				if(o == null) continue;
-				if(o.getGlobalBounds().contains(mEvent.getX(), mEvent.getY()))
-				{
-					nextOption = i;
-					break;
-				}
-				++i;
-				
-			}
-			if(nextOption == -1) return true;
-			
-			for(MenuOption o : options)
-			{
-				if(o == null) continue;
-				o.deactivate();
-			}
-			options[currentOption].activate();
-			currentOption = nextOption;
-			return true;
+			if(mouseMoved(mEvent))
+				return true;
 		}
 		
-		
-		if(options[startPosition].getInput(e)) // start game
-		{
-			startGame();
-			return true;
-		}
-		
-		if(options[exitPosition].getInput(e)) // end game
-		{
-			exit();
-			return true;
-		}
-		
-		if(options[1].getInput(e)) return true;
-		
+		// ??
 		return false;
 	}
 	
@@ -132,6 +99,34 @@ public class MainMenu extends GameState
 		}
 		
 		return false;
+	}
+	
+	private boolean mouseMoved(MouseEvent e)
+	{
+		//MouseEvent mEvent = (MouseEvent)e.event;
+		int nextOption = -1;
+		int i = 0;
+		for(MenuOption o : options)
+		{
+			if(o == null) continue;
+			if(o.getGlobalBounds().contains(e.getX(), e.getY()))
+			{
+				nextOption = i;
+				break;
+			}
+			++i;
+			
+		}
+		if(nextOption == -1) return false;
+		
+		for(MenuOption o : options)
+		{
+			if(o == null) continue;
+			o.deactivate();
+		}
+		currentOption = nextOption;
+		options[currentOption].activate();
+		return true;
 	}
 	
 	@Override

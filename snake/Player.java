@@ -14,7 +14,7 @@ public class Player
 	private BufferedImage headPic;
 	private BufferedImage head[];
 	
-	private Time moveDelay = Time.seconds(0.25); // for changing difficulty
+	private Time moveDelay;// = Time.seconds(0.25); // for changing difficulty
 	private Clock moveTimer;
 	private int xDir, yDir;
 	private LinkedList<Segment> tail = new LinkedList<>();
@@ -25,7 +25,7 @@ public class Player
 	private int rotation;
 	private int newRotation;
 	
-	public Player(int x, int y, GameField f)
+	public Player(int x, int y, GameField f, int diff)
 	{
 		
 		this.x = x;
@@ -34,6 +34,7 @@ public class Player
 		newRotation = rotation;
 		xDir = 1;
 		yDir = 0;
+		
 		
 		field = f;
 		
@@ -75,6 +76,7 @@ public class Player
 		
 		testObstacle = new Obstacle(x, y);
 		
+		moveDelay = Time.seconds(0.25 - diff * 0.05);
 		moveTimer = new Clock();
 		
 		field.eatFood(x, y, tail);

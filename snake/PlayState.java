@@ -27,8 +27,10 @@ public class PlayState extends GameState
     {
         super(p);
         
-        System.out.printf("Starting game with diff: %d\n", diff);
+        field = new GameField(0);
         
+//        field.save(0);
+//        System.exit(33);
 	
 //		field.addObstacle(new Obstacle(2, 3));
 //		field.addObstacle(new Obstacle(0, 0));
@@ -52,7 +54,7 @@ public class PlayState extends GameState
 		tailPictures("tailRT");
 	
 	
-		player = new Player(startX, startY, field);
+		player = new Player(startX, startY, field, diff);
 		
 		hud = new HUD(player);
     }
