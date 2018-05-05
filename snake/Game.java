@@ -66,8 +66,6 @@ public class Game extends Canvas
 			font = new Font(tmp.getName(), Font.PLAIN, 32);
 		
 		scores = ScoreTable.load();
-		System.out.println("Current scores:");
-		System.out.println(scores);
 		
 	}
 	
@@ -126,8 +124,6 @@ public class Game extends Canvas
 	
 	public Game()
 	{
-		System.out.println(width);
-		System.out.println(height);
 		
 		setSize(width, height);
 		
@@ -176,10 +172,6 @@ public class Game extends Canvas
 
     public void start(boolean building)
     {
-        System.out.println("Game start");
-
-
-        
         GameEvent e = new GameEvent();
 	
 		// frames management values
