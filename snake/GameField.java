@@ -90,7 +90,6 @@ public class GameField extends Rectangle
 		++nextTeleporter;
 		
 		Teleporter toAdd = new Teleporter(xa, ya, xb, yb, teleporterColors[nextTeleporter]);
-		System.out.println(toAdd);
 		if(teleporters.contains(toAdd)) return;
 		teleporters.add(toAdd);
 	}

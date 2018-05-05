@@ -12,7 +12,7 @@ public class MainMenu extends GameState
 	// exit
 	
 	private final int optionsCount = 3;
-	private final int startPosition = 0, exitPosition = optionsCount - 1;
+	private final int startPosition = 0,  difficultyPosition = 1,exitPosition = optionsCount - 1;
 	private int currentOption;
 	
 	public MainMenu(StateSystem p, Graphics2D g)
@@ -31,8 +31,8 @@ public class MainMenu extends GameState
 		x = (int)b.x;
 		y = (int)(b.y + b.height) + 50;
 		
-		options[1] = new DifficultySetting(x, y, "Choose difficulty", font, g);
-		b = options[1].getGlobalBounds();
+		options[difficultyPosition] = new DifficultySetting(x, y, "Choose difficulty", font, g);
+		b = options[difficultyPosition].getGlobalBounds();
 		x = (int)b.x;
 		y = (int)(b.y + b.height) + 50;
 		
@@ -65,6 +65,15 @@ public class MainMenu extends GameState
 		{
 			MouseEvent mEvent = (MouseEvent)e.event;
 			if(mouseMoved(mEvent))
+				return true;
+		}
+		
+		if(e.event.getID() == MouseEvent.MOUSE_CLICKED)
+		{
+			MouseEvent mEvent = (MouseEvent)e.event;
+			if(mouseClicked(mEvent))
+				return true;
+			else if(options[currentOption].getInput(e))
 				return true;
 		}
 		
@@ -129,6 +138,35 @@ public class MainMenu extends GameState
 		return true;
 	}
 	
+	private boolean mouseClicked(MouseEvent e)
+	{
+		int x , y;
+		x = e.getX();
+		y = e.getY();
+		MenuOption selectedOption = null;
+		for(MenuOption o : options)
+			if(o.getGlobalBounds().contains(x, y))
+			{
+				selectedOption = o;
+				break;
+			}
+		if(selectedOption == null)
+			return false;
+		switch(currentOption)
+		{
+		case startPosition:
+			startGame();
+			return true;
+		case exitPosition:
+			exit();
+			return true;
+		case difficultyPosition:
+			
+			return false;
+		}
+		return false;
+	}
+	
 	@Override
 	public void update()
 	{
@@ -147,7 +185,7 @@ public class MainMenu extends GameState
 	
 	private void startGame()
 	{
-		parent.addRequest(new PlayState(parent, ((DifficultySetting)options[1]).getCurrentSetting()));
+		parent.addRequest(new PlayState(parent, ((DifficultySetting)options[difficultyPosition]).getCurrentSetting()));
 	}
 	
 	private void exit()
