@@ -3,9 +3,22 @@ import java.awt.event.KeyEvent;
 
 public class GameOver extends GameState
 {
-	public GameOver(StateSystem p)
+	private PlayState previous;
+	private String lines[];
+	private final int finalScore;
+	private boolean scoreCheck = false;
+	
+	public GameOver(StateSystem p, PlayState prev, int score)
 	{
 		super(p);
+		previous = prev;
+		finalScore = score;
+		String msg = "Game Over\n" +
+				"    Press enter to try again\n" +
+				"    Press escape to exit\n";
+		lines = msg.split("\n");
+		
+		
 	}
 	
 	@Override
@@ -21,7 +34,10 @@ public class GameOver extends GameState
 		switch(e.getKeyCode())
 		{
 		case KeyEvent.VK_ESCAPE:
-			parent.deleteRequest(2);
+			parent.deleteRequest(1);
+			return true;
+		case KeyEvent.VK_ENTER:
+			parent.changeRequest(new PlayState(previous));
 			return true;
 		}
 		return false;
@@ -30,12 +46,17 @@ public class GameOver extends GameState
 	@Override
 	public void update()
 	{
-	
+		if(scoreCheck) return;
+		scoreCheck = true;
+		if(finalScore > Game.scores.lowestScore())
+			parent.addRequest(new ScoreInput(parent, finalScore));
 	}
 	
 	@Override
 	public void draw(Graphics2D g)
 	{
+		previous.draw(g);
+		
 		g.setFont(Game.font);
 		Composite previousComp = g.getComposite();
 		g.setColor(Color.yellow);
@@ -44,7 +65,10 @@ public class GameOver extends GameState
 		
 		g.setColor(Color.black);
 		g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC));
-		g.drawString("Game Over", 100, 100);
+		int x = 100;
+		int y = 100;
+		for(String l : lines)
+			g.drawString(l, x, y += g.getFontMetrics().getHeight());
 		
 		g.setComposite(previousComp);
 	}

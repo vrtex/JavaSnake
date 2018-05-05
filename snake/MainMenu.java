@@ -12,13 +12,16 @@ public class MainMenu extends GameState
 	// levels
 	// exit
 	
-	private final int optionsCount = 4;
+	private final int optionsCount = 5;
 	private final int
 			startPosition = 0,
 			difficultyPosition = 1,
 			levelPosition = 2,
+			scoresPosition = 3,
 			exitPosition = optionsCount - 1;
 	private int currentOption;
+	
+	private boolean visible = true;
 	
 	public MainMenu(StateSystem p, Graphics2D g)
 	{
@@ -42,6 +45,11 @@ public class MainMenu extends GameState
 		
 		options[levelPosition] = new DifficultySetting(x, y, "Pick level", font, g, 5);
 		b = options[levelPosition].getGlobalBounds();
+		x = (int)b.x;
+		y = (int)(b.y + b.height) + 50;
+		
+		options[scoresPosition] = new MenuOption(x, y, "High scores", font, g);
+		b = options[scoresPosition].getGlobalBounds();
 		x = (int)b.x;
 		y = (int)(b.y + b.height) + 50;
 		
@@ -113,6 +121,8 @@ public class MainMenu extends GameState
 				startGame();
 			else if(currentOption == exitPosition) // end game
 				exit();
+			else if(currentOption == scoresPosition) // show scores
+				showScores();
 			return true;
 		}
 		
@@ -170,8 +180,10 @@ public class MainMenu extends GameState
 			exit();
 			return true;
 		case difficultyPosition:
-			
 			return false;
+		case scoresPosition:
+			showScores();
+			return true;
 		}
 		return false;
 	}
@@ -185,11 +197,24 @@ public class MainMenu extends GameState
 	@Override
 	public void draw(Graphics2D g)
 	{
+		if(!visible) return;
 		for(MenuOption o : options)
 		{
 			if(o == null) continue;
 			o.draw(g);
 		}
+	}
+	
+	@Override
+	public void activate()
+	{
+		visible = true;
+	}
+	
+	@Override
+	public void deactivate()
+	{
+		visible = false;
 	}
 	
 	private void startGame()
@@ -204,5 +229,10 @@ public class MainMenu extends GameState
 	private void exit()
 	{
 		System.exit(33);
+	}
+	
+	private void showScores()
+	{
+		parent.addRequest(new ScoreState(parent));
 	}
 }

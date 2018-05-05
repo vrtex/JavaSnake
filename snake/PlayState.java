@@ -22,6 +22,7 @@ public class PlayState extends GameState
 	private HUD hud;
 	public final static int startX = 5, startY = 5;
 	private int lvlNumber;
+	private int difficulty;
 	
 	
 	public PlayState(StateSystem p, int diff, int lvl)
@@ -63,10 +64,24 @@ public class PlayState extends GameState
 		tailPictures("tailRT");
 	
 	
-		player = new Player(startX, startY, field, diff);
+		difficulty = diff;
+		player = new Player(startX, startY, field, difficulty);
 		
 		hud = new HUD(player);
     }
+    
+    public PlayState(PlayState other)
+	{
+		super(other.parent);
+		
+		lvlNumber = other.lvlNumber;
+		field = other.field;
+		
+		difficulty = other.difficulty;
+		player = new Player(PlayState.startX, PlayState.startY, field, difficulty);
+		
+		hud = new HUD(player);
+	}
 
     public boolean getInput(GameEvent e)
     {
@@ -88,7 +103,7 @@ public class PlayState extends GameState
     	// todo isDead?
 		if(player.isDead())
 		{
-			parent.addRequest(new GameOver(parent));
+			parent.changeRequest(new GameOver(parent, this, player.getScore()));
 			return;
 		}
 		field.update();

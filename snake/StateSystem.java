@@ -29,13 +29,22 @@ public class StateSystem
 
     public void update()
     {
-        while(toDelete != 0)
-        {
-            states.pop();
-            --toDelete;
-        }
+    	if(toDelete != 0)
+		{
+			while(toDelete != 0)
+			{
+				states.pop();
+				--toDelete;
+			}
+			if(states.peek() != null)
+				states.peek().activate();
+		}
+        
         if(toAdd != null)
         {
+        	toAdd.activate();
+        	if(states.peek() != null)
+        		states.peek().deactivate();
             states.push(toAdd);
             toAdd = null;
         }

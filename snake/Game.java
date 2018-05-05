@@ -16,6 +16,7 @@ public class Game extends Canvas
 	public static final Dimension pieceCount;
 	public static final Random rand;
 	public static final Font font;
+	public static final ScoreTable scores;
 	
 	private Window w;
 	private StateSystem states;
@@ -63,6 +64,10 @@ public class Game extends Canvas
 			font = null;
 		else
 			font = new Font(tmp.getName(), Font.PLAIN, 32);
+		
+		scores = ScoreTable.load();
+		System.out.println("Current scores:");
+		System.out.println(scores);
 		
 	}
 	
@@ -185,7 +190,7 @@ public class Game extends Canvas
         // stuff for drawing
 		Graphics2D g;
 		BufferStrategy bs = getBufferStrategy();
-        setBackground(Color.green);
+        setBackground(new Color(8, 81, 9));
         frameTimer.restart();
         printTimer.restart();
 //        states.addRequest(new PlayState(states, 1));
@@ -193,6 +198,7 @@ public class Game extends Canvas
 			states.addRequest(new BuildingState(states));
 		else
 			states.addRequest(new MainMenu(states, (Graphics2D)bs.getDrawGraphics()));
+//		states.addRequest(new ScoreState(states));
 
         while(true)
 		{
@@ -225,7 +231,7 @@ public class Game extends Canvas
 			if(printTimer.getElapsedTime().compareTo(printDelay) < 0) continue;
 			
 			// fps display
-			System.out.printf("FPS: %d\n", frames);
+			//System.out.printf("FPS: %d\n", frames);
 			frames = 0;
 			
 			printTimer.restart();

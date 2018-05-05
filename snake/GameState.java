@@ -16,6 +16,16 @@ public abstract class GameState
 
     public abstract void draw(Graphics2D g);
     
+    public void activate()
+    {
+    
+    }
+    
+    public void deactivate()
+    {
+    
+    }
+    
     public void end()
     {
     
