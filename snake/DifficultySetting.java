@@ -6,16 +6,18 @@ import java.awt.geom.Rectangle2D;
 public class DifficultySetting extends MenuOption
 {
 	private MenuOption settings[];
+	private int numberOfOpions;
 	int currentSetting;
 	
-	public DifficultySetting(int x, int y, String desc, Font f, Graphics2D g)
+	public DifficultySetting(int x, int y, String desc, Font f, Graphics2D g, int number)
 	{
 		super(x, y, desc, f, g);
-		settings = new MenuOption[4];
+		settings = new MenuOption[number];
 		int width;
 		FontMetrics fM = g.getFontMetrics();
 		width = (int)fM.getStringBounds("99", g).getWidth() * 2;
-		for(int i = 0; i < 4; ++i)
+		numberOfOpions = number;
+		for(int i = 0; i < numberOfOpions; ++i)
 		{
 			settings[i] = new MenuOption(
 					x + width * i + 15,
@@ -25,7 +27,7 @@ public class DifficultySetting extends MenuOption
 					g);
 		}
 		
-		for(int i = 0; i < 4; ++i)
+		for(int i = 0; i < numberOfOpions; ++i)
 		{
 			bounds = (Rectangle2D.Float)bounds.createUnion(settings[i].getGlobalBounds());
 		}

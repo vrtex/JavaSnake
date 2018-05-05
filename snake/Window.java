@@ -28,7 +28,12 @@ public class Window extends JFrame
 	{
 		if(currentEvents.size() == 0) return false;
 		
-		GameEvent next = currentEvents.pop();
+		GameEvent next = null;
+		if(!currentEvents.isEmpty())
+			next = currentEvents.pop();
+		
+		if(next == null)
+			return false;
 		
 		e.event = next.event;
 		e.type = next.type;

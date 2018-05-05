@@ -20,8 +20,10 @@ public class GameField extends Rectangle
 	private int bonusCountdown = 1;
 	private Time bonusTime = Time.seconds(15);
 	private Clock bonusTimer;
-	private char teleporterColors[] = new char[] {'R', 'B', 'G'};
-	private int nextTeleporter = 0;
+//	public static char teleporterColors[] = new char[] {'R', 'B', 'G'};
+	private LinkedList<Character> avalibleColors = new LinkedList<>();
+	private LinkedList<Character> usedColors = new LinkedList<>();
+//	private int nextTeleporter = 0;
 	
 	public GameField(int x, int y, int w, int h)
 	{
@@ -31,37 +33,11 @@ public class GameField extends Rectangle
 		height = h;
 		size = new Dimension(width / Game.pieceSize.width, height / Game.pieceSize.height);
 		
+		avalibleColors.addLast('R');
+		avalibleColors.addLast('B');
+		avalibleColors.addLast('G');
+		
 		loadFieldImages();
-		
-//		BufferedImage nextImage;
-//		try
-//		{
-//			if(!Game.images.contains("block"))
-//			{
-//				nextImage = ImageIO.read(new File("Res\\block.png"));
-//				Game.images.insert("block", nextImage);
-//			}
-//
-//			if(!Game.images.contains("food"))
-//			{
-//				nextImage = ImageIO.read(new File("Res\\food.png"));
-//				Game.images.insert("food", nextImage);
-//			}
-//
-//			if(!Game.images.contains("bonusFood"))
-//			{
-//				nextImage = ImageIO.read(new File("Res\\bonusFood.png"));
-//				Game.images.insert("bonusFood", nextImage);
-//			}
-//
-//		}
-//		catch(IOException e)
-//		{
-//			e.printStackTrace();
-//			System.exit(543656);
-//		}
-		
-		//load();
 		bonusTimer = new Clock();
 		bonusTimer.restart();
 	}
@@ -72,6 +48,9 @@ public class GameField extends Rectangle
 		
 		loadFieldImages();
 		
+		avalibleColors.addLast('R');
+		avalibleColors.addLast('B');
+		avalibleColors.addLast('G');
 		
 		bonusTimer = new Clock();
 		bonusTimer.restart();
@@ -84,14 +63,45 @@ public class GameField extends Rectangle
 		obstacles.add(o);
 	}
 	
+	public void removeObstacle(Obstacle o)
+	{
+		obstacles.remove(o);
+	}
+	
 	public void addTeleporter(int xa, int ya, int xb, int yb) throws RuntimeException
 	{
-		if(nextTeleporter == teleporterColors.length - 1) throw new RuntimeException();
-		++nextTeleporter;
+//		if(nextTeleporter == teleporterColors.length) throw new RuntimeException();
+		if(avalibleColors.isEmpty()) throw new RuntimeException();
 		
-		Teleporter toAdd = new Teleporter(xa, ya, xb, yb, teleporterColors[nextTeleporter]);
+//		Teleporter toAdd = new Teleporter(xa, ya, xb, yb, teleporterColors[nextTeleporter]);
+		char col = avalibleColors.removeFirst();
+		usedColors.addLast(col);
+		Teleporter toAdd = new Teleporter(xa, ya, xb, yb, col);
 		if(teleporters.contains(toAdd)) return;
 		teleporters.add(toAdd);
+//		++nextTeleporter;
+	}
+	
+	public void removeTeleporter(int x, int y)
+	{
+		Teleporter toRemove = null;
+		for(Teleporter t : teleporters)
+		{
+			if(t.getExit(x, y) != null)
+			{
+				toRemove = t;
+				break;
+			}
+		}
+		
+		if(toRemove == null) return;
+		
+		
+		teleporters.remove(toRemove);
+		usedColors.remove((Character)toRemove.getColor());
+		avalibleColors.addFirst((Character)toRemove.getColor());
+//		--nextTeleporter;
+		
 	}
 	
 	public Pair<Integer, Integer> teleportsFrom(int x, int y)
@@ -313,7 +323,6 @@ public class GameField extends Rectangle
 	{
 		LinkedList<Pair<Integer, Integer>> list = null;
 		LinkedList<Integer> teleporterList = null;
-		System.out.println("loading");
 		
 		FieldInfo loaded = null;
 		
@@ -347,7 +356,6 @@ public class GameField extends Rectangle
 		
 		
 		
-		if(list.size() < 2) throw new RuntimeException();
 		if(teleporterList.size() % 4 != 0) throw new RuntimeException();
 		
 		

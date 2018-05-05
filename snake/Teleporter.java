@@ -18,11 +18,13 @@ public class Teleporter
 	}
 	
 	private Teleporter.Exit exitA, exitB;
+	private char color;
 	
 	public Teleporter(int xa, int ya, int xb, int yb, char color)
 	{
 		exitA = new Teleporter.Exit(xa, ya, color);
 		exitB = new Teleporter.Exit(xb, yb, color);
+		this.color = color;
 	}
 	
 	public void draw(Graphics2D g)
@@ -63,5 +65,10 @@ public class Teleporter
 		list.addLast(exitA.y);
 		list.addLast(exitB.x);
 		list.addLast(exitB.y);
+	}
+	
+	public char getColor()
+	{
+		return color;
 	}
 }

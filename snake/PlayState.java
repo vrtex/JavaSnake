@@ -20,15 +20,14 @@ public class PlayState extends GameState
 				Game.height - Game.pieceSize.height);
 	private Player player;
 	private HUD hud;
-	private final int startX = 5, startY = 5;
+	public final static int startX = 5, startY = 5;
 	
 	
-	public PlayState(StateSystem p, int diff)
+	public PlayState(StateSystem p, int diff, int lvl)
     {
         super(p);
         
-        field = new GameField(15);
-        
+        field = new GameField(lvl);
         
         
 //        field.save(0);

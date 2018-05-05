@@ -11,8 +11,12 @@ public class MainMenu extends GameState
 	// difficulty
 	// exit
 	
-	private final int optionsCount = 3;
-	private final int startPosition = 0,  difficultyPosition = 1,exitPosition = optionsCount - 1;
+	private final int optionsCount = 4;
+	private final int
+			startPosition = 0,
+			difficultyPosition = 1,
+			levelPosition = 2,
+			exitPosition = optionsCount - 1;
 	private int currentOption;
 	
 	public MainMenu(StateSystem p, Graphics2D g)
@@ -27,12 +31,17 @@ public class MainMenu extends GameState
 		int x, y;
 		
 		options[startPosition] = new MenuOption(100, 100, "Start Game", font, g);
-		Rectangle2D.Float b = options[0].getGlobalBounds();
+		Rectangle2D.Float b = options[startPosition].getGlobalBounds();
 		x = (int)b.x;
 		y = (int)(b.y + b.height) + 50;
 		
-		options[difficultyPosition] = new DifficultySetting(x, y, "Choose difficulty", font, g);
+		options[difficultyPosition] = new DifficultySetting(x, y, "Choose difficulty", font, g, 4);
 		b = options[difficultyPosition].getGlobalBounds();
+		x = (int)b.x;
+		y = (int)(b.y + b.height) + 50;
+		
+		options[levelPosition] = new DifficultySetting(x, y, "Pick level", font, g, 3);
+		b = options[levelPosition].getGlobalBounds();
 		x = (int)b.x;
 		y = (int)(b.y + b.height) + 50;
 		
@@ -185,7 +194,11 @@ public class MainMenu extends GameState
 	
 	private void startGame()
 	{
-		parent.addRequest(new PlayState(parent, ((DifficultySetting)options[difficultyPosition]).getCurrentSetting()));
+		parent.addRequest(
+				new PlayState(parent,
+				((DifficultySetting)options[difficultyPosition]).getCurrentSetting(),
+				((DifficultySetting)options[levelPosition]).getCurrentSetting())
+						 );
 	}
 	
 	private void exit()
