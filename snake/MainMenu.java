@@ -9,6 +9,7 @@ public class MainMenu extends GameState
 	private MenuOption options[];
 	// start game
 	// difficulty
+	// levels
 	// exit
 	
 	private final int optionsCount = 4;
@@ -23,8 +24,7 @@ public class MainMenu extends GameState
 	{
 		super(p);
 		
-		Font f = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts()[0];
-		Font font = new Font(f.getName(), Font.PLAIN, 32);
+		Font font = Game.font;
 		
 		options = new MenuOption[optionsCount];
 		
@@ -40,7 +40,7 @@ public class MainMenu extends GameState
 		x = (int)b.x;
 		y = (int)(b.y + b.height) + 50;
 		
-		options[levelPosition] = new DifficultySetting(x, y, "Pick level", font, g, 3);
+		options[levelPosition] = new DifficultySetting(x, y, "Pick level", font, g, 5);
 		b = options[levelPosition].getGlobalBounds();
 		x = (int)b.x;
 		y = (int)(b.y + b.height) + 50;

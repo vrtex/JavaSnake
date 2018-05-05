@@ -21,13 +21,15 @@ public class PlayState extends GameState
 	private Player player;
 	private HUD hud;
 	public final static int startX = 5, startY = 5;
+	private int lvlNumber;
 	
 	
 	public PlayState(StateSystem p, int diff, int lvl)
     {
         super(p);
         
-        field = new GameField(lvl);
+        lvlNumber = lvl;
+        field = new GameField(lvlNumber);
         
         
 //        field.save(0);
@@ -84,6 +86,11 @@ public class PlayState extends GameState
     public void update()
     {
     	// todo isDead?
+		if(player.isDead())
+		{
+			parent.addRequest(new GameOver(parent));
+			return;
+		}
 		field.update();
     	player.update();
 		hud.update();
@@ -100,7 +107,7 @@ public class PlayState extends GameState
     
     public void end()
 	{
-		field.save();
+		field.save(lvlNumber);
 	}
 	
 	public static void tailPictures(String id)

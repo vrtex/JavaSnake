@@ -44,13 +44,14 @@ public class GameField extends Rectangle
 	
 	public GameField(int n) // loading from file
 	{
+		avalibleColors.addLast('R');
+		avalibleColors.addLast('B');
+		avalibleColors.addLast('G');
+		
 		load(n);
 		
 		loadFieldImages();
 		
-		avalibleColors.addLast('R');
-		avalibleColors.addLast('B');
-		avalibleColors.addLast('G');
 		
 		bonusTimer = new Clock();
 		bonusTimer.restart();
@@ -219,6 +220,7 @@ public class GameField extends Rectangle
 		return 0;
 	}
 	
+	@Deprecated
 	public void save()
 	{
 		
@@ -254,14 +256,6 @@ public class GameField extends Rectangle
 		LinkedList<Pair<Integer, Integer>> list = new LinkedList<>();
 		LinkedList<Integer> teleporterList = new LinkedList<>();
 		
-//		Pair pos = new Pair<>(x, y);
-//		list.addLast(pos);
-//		System.out.printf("pushing position: %d, %d\n", pos.getKey(), pos.getValue());
-//		Pair size = new Pair<>(width, height);
-//		list.addLast(size);
-//		System.out.printf("pushing size: %d, %d\n", size.getKey(), size.getValue());
-		
-		
 		for(Obstacle o : obstacles)
 		{
 			Pair p = new Pair<>(o.x, o.y);
@@ -280,11 +274,6 @@ public class GameField extends Rectangle
 			FileOutputStream f = new FileOutputStream("lvl\\l" + String.valueOf(n) + ".lvl");
 			ObjectOutputStream oStream = new ObjectOutputStream(f);
 			oStream.writeObject(toSave);
-//			oStream.writeObject(new Pair<>(x, y));
-//			oStream.writeObject(size);
-//
-//			oStream.writeObject(list);
-//			oStream.writeObject(teleporterList);
 		}
 		catch(IOException e)
 		{
@@ -319,7 +308,7 @@ public class GameField extends Rectangle
 	}
 	
 	
-	private LinkedList<Pair<Integer, Integer>> load(int n)
+	private void load(int n)
 	{
 		LinkedList<Pair<Integer, Integer>> list = null;
 		LinkedList<Integer> teleporterList = null;
@@ -332,10 +321,6 @@ public class GameField extends Rectangle
 			ObjectInputStream iStream = new ObjectInputStream(f);
 			loaded = (FieldInfo)iStream.readObject();
 			
-//			pos = (Pair<Integer, Integer>)iStream.readObject();
-//			s = (Dimension)iStream.readObject();
-//			list = (LinkedList<Pair<Integer, Integer>>)iStream.readObject();
-//			teleporterList = (LinkedList<Integer>)iStream.readObject();
 		}
 		catch(IOException | ClassNotFoundException e)
 		{
@@ -376,8 +361,6 @@ public class GameField extends Rectangle
 			
 			addTeleporter(xa, ya, xb, yb);
 		}
-		
-		return list;
 	}
 	
 	public static void loadFieldImages()

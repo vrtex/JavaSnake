@@ -15,6 +15,7 @@ public class Game extends Canvas
 	public static final int width, height;
 	public static final Dimension pieceCount;
 	public static final Random rand;
+	public static final Font font;
 	
 	private Window w;
 	private StateSystem states;
@@ -44,6 +45,25 @@ public class Game extends Canvas
 		height = headPic.getHeight() * 21;
 		
 		pieceCount = new Dimension(width / pieceSize.width, height / pieceSize.height);
+		
+		boolean gotFont = false;
+		Font tmp = null;
+		try
+		{
+			tmp = Font.createFont(Font.TRUETYPE_FONT, new File("Res\\arial.ttf"));
+			gotFont = true;
+		}
+		catch(FontFormatException | IOException e)
+		{
+			e.printStackTrace();
+			System.out.println("no font");
+			System.exit(435);
+		}
+		if(!gotFont)
+			font = null;
+		else
+			font = new Font(tmp.getName(), Font.PLAIN, 32);
+		
 	}
 	
 	public static void insertRotatedImages(String id)
@@ -121,11 +141,35 @@ public class Game extends Canvas
 	
     public static void main(String args[])
     {
+    	boolean building = false;
+    	boolean reset = false;
+    	if(args.length != 0)
+		{
+			switch(args[0])
+			{
+			case "-r":
+				reset = true;
+				break;
+			case "-b":
+				building = true;
+				break;
+			}
+		}
+		if(reset)
+		{
+			GameField newField = new GameField(
+					Game.pieceSize.width / 2,
+					Game.pieceSize.height,
+					Game.width - Game.pieceSize.width,
+					Game.height - Game.pieceSize.height);
+			newField.save(0);
+			System.exit(-2);
+		}
         Game g = new Game();
-        g.start();
+        g.start(building);
     }
 
-    private void start()
+    public void start(boolean building)
     {
         System.out.println("Game start");
 
@@ -145,8 +189,11 @@ public class Game extends Canvas
         frameTimer.restart();
         printTimer.restart();
 //        states.addRequest(new PlayState(states, 1));
-		states.addRequest(new MainMenu(states, (Graphics2D)bs.getDrawGraphics()));
-//		states.addRequest(new BuildingState(states));
+		if(building)
+			states.addRequest(new BuildingState(states));
+		else
+			states.addRequest(new MainMenu(states, (Graphics2D)bs.getDrawGraphics()));
+
         while(true)
 		{
 			// events

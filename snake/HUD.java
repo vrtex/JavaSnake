@@ -4,14 +4,12 @@ public class HUD
 {
 	Player parent;
 	private int score;
-	private Font font;
+	private Font font = Game.font;
 	
 	public HUD(Player p)
 	{
 		parent = p;
 		score = parent.getScore();
-		Font f = GraphicsEnvironment.getLocalGraphicsEnvironment().getAllFonts()[0];
-		font = new Font(f.getName(), Font.PLAIN, 32);
 		
 	}
 	

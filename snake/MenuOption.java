@@ -37,27 +37,16 @@ public class MenuOption
 			return mouseMoved((MouseEvent)e.event);
 		if(e.event.getID() == MouseEvent.MOUSE_CLICKED)
 			return mouseClicked((MouseEvent)e.event);
+		if(e.event.getID() == MouseEvent.MOUSE_RELEASED)
+			return mouseReleased((MouseEvent)e.event);
+		if(e.event.getID() == MouseEvent.MOUSE_PRESSED)
+			return mousePressed((MouseEvent)e.event);
 		
 		if(e.event.getID() == KeyEvent.KEY_PRESSED)
 			return true;
 		
 		return false;
 		
-		
-//		MouseEvent mEvent;
-//		switch(e.event.getID())
-//		{
-//		case MouseEvent.MOUSE_CLICKED:
-//			mEvent = (MouseEvent)e.event;
-//			return bounds.contains(mEvent.getX(), mEvent.getY());
-//		case MouseEvent.MOUSE_MOVED:
-//			mEvent = (MouseEvent)e.event;
-//			active = bounds.contains(mEvent.getX(), mEvent.getY());
-//			return true;
-//		}
-//		MouseEvent event = (MouseEvent)e.event;
-//		int mouseX = event.getX(), mouseY = event.getY();
-//		return bounds.contains(mouseX, mouseY);
 	}
 	
 	protected boolean mouseClicked(MouseEvent e)
@@ -70,6 +59,17 @@ public class MenuOption
 		active = bounds.contains(e.getX(), e.getY());
 		return bounds.contains(e.getX(), e.getY());
 	}
+	
+	protected boolean mouseReleased(MouseEvent e)
+	{
+		return mouseClicked(e);
+	}
+	
+	protected boolean mousePressed(MouseEvent e)
+	{
+		return mouseClicked(e);
+	}
+	
 	
 	public void draw(Graphics2D g)
 	{

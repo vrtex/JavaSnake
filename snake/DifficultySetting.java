@@ -6,28 +6,39 @@ import java.awt.geom.Rectangle2D;
 public class DifficultySetting extends MenuOption
 {
 	private MenuOption settings[];
-	private int numberOfOpions;
+	private int numberOfOptions;
 	int currentSetting;
 	
 	public DifficultySetting(int x, int y, String desc, Font f, Graphics2D g, int number)
 	{
 		super(x, y, desc, f, g);
 		settings = new MenuOption[number];
-		int width;
+		int width, height;
 		FontMetrics fM = g.getFontMetrics();
-		width = (int)fM.getStringBounds("99", g).getWidth() * 2;
-		numberOfOpions = number;
-		for(int i = 0; i < numberOfOpions; ++i)
+		width = (int)fM.getStringBounds("99", g).getWidth() * 3;
+		height = (int)fM.getStringBounds("99", g).getHeight() * 2;
+		numberOfOptions = number;
+		int yOffset = 0;
+		int xOffset = 0;
+		for(int i = 0; i < numberOfOptions; ++i)
 		{
+			if(i % 5 == 0 && i > 0)
+			{
+				yOffset += height;
+				xOffset = width;
+			}
+			else
+				xOffset += width;
 			settings[i] = new MenuOption(
-					x + width * i + 15,
-					y + (int)getGlobalBounds().height + 10,
+					x + xOffset + 15,
+//					x + width * i + 15,
+					y + (int)getGlobalBounds().height + 10 + yOffset,
 					String.valueOf(i + 1),
 					f,
 					g);
 		}
 		
-		for(int i = 0; i < numberOfOpions; ++i)
+		for(int i = 0; i < numberOfOptions; ++i)
 		{
 			bounds = (Rectangle2D.Float)bounds.createUnion(settings[i].getGlobalBounds());
 		}
@@ -52,11 +63,10 @@ public class DifficultySetting extends MenuOption
 		
 		int nextSetting = -1;
 		
-		for(int i = 0; i < 4; ++i)
+		for(int i = 0; i < numberOfOptions; ++i)
 		{
 			if(settings[i].getInput(e))
 			{
-				settings[i].activate();
 				nextSetting = i;
 				break;
 			}
