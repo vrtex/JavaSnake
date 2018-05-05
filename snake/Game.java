@@ -127,8 +127,6 @@ public class Game extends Canvas
 
     private void start()
     {
-    	// dfhgfdh
-		
         System.out.println("Game start");
 
 
