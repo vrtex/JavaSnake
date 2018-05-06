@@ -91,7 +91,7 @@ public class PlayState extends GameState
 			KeyEvent kEvent = (KeyEvent)e.event;
 			if(kEvent.getKeyCode() == KeyEvent.VK_ESCAPE)
 			{
-				parent.deleteRequest(1);
+				parent.addRequest(new PauseState(parent));
 				return true;
 			}
 		}

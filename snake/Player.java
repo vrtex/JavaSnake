@@ -12,7 +12,7 @@ public class Player
 {
 	
 	private int x, y;
-	private int score = 1;
+	private int score = 0;
 	private BufferedImage headPic;
 	private BufferedImage head[];
 	
