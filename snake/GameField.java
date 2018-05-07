@@ -170,6 +170,8 @@ public class GameField extends Rectangle
 	
 	private void spawnFood(int x, int y, LinkedList<Segment> tail)
 	{
+		if(obstacles.size() + tail.size() == this.size.width * this.size.height)
+			return;
 		
 		int fx, fy;
 		do
@@ -190,6 +192,9 @@ public class GameField extends Rectangle
 	
 	private void spawnBonus(int x, int y, LinkedList<Segment> tail)
 	{
+		if(obstacles.size() + tail.size() >= this.size.width * this.size.height - 5)
+			return;
+		
 		bonusCountdown = 5;
 		int fx, fy;
 		do
