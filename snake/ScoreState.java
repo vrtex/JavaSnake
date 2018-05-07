@@ -40,11 +40,12 @@ public class ScoreState extends GameState
 		g.drawString("Score: ", x + 200, y);
 		
 		y += height;
+		int i = 1;
 		for(Pair<String, Integer> e : Game.scores.getEntries())
 		{
 			y += height;
 			g.setColor(Color.black);
-			g.drawString(e.getKey(), x, y);
+			g.drawString(String.valueOf(i++) + ". " + e.getKey(), x, y);
 			g.setColor(Color.white);
 			g.drawString(String.valueOf(e.getValue()), x + 200, y);
 		}

@@ -1,10 +1,4 @@
 
-// hello there
-// general kenobi
-// this will make a fine addition to my collection
-// fuck I can't remember more
-// fsdgf
-// ujujuju
 
 public class Clock
 {
@@ -18,7 +12,7 @@ public class Clock
 	
 	public Time restart()
 	{
-		Time toReturn = new Time(System.nanoTime() - lastRestart);
+		Time toReturn = getElapsedTime();
 		lastRestart = System.nanoTime();
 		return toReturn;
 	}

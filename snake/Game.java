@@ -71,12 +71,15 @@ public class Game extends Canvas
 	
 	public static void insertRotatedImages(String id)
 	{
+		if(Game.images.contains(id + "R"))
+			return;
 		BufferedImage nextImage = images.get(id);
 		
 		Game.images.insert(id + "R", nextImage);
 		AffineTransform transform = AffineTransform.getRotateInstance(Math.PI / 2, nextImage.getWidth() / 2, nextImage.getHeight() / 2);
 		AffineTransformOp operation = new AffineTransformOp(transform, AffineTransformOp.TYPE_BICUBIC);
 		nextImage = operation.filter(nextImage, null);
+		
 		Game.images.insert(id + "D", nextImage);
 		
 		nextImage = operation.filter(nextImage, null);

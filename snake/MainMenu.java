@@ -68,6 +68,10 @@ public class MainMenu extends GameState
 		{
 			KeyEvent kEvent = (KeyEvent)e.event;
 			boolean validKey = keyPressed(kEvent);
+			for(MenuOption o : options)
+			{
+				o.deactivate();
+			}
 			options[currentOption].activate();
 			
 			
@@ -103,18 +107,14 @@ public class MainMenu extends GameState
 		switch(e.getKeyCode())
 		{
 		case KeyEvent.VK_UP:
-			if(currentOption > 0)
-			{
-				options[currentOption].deactivate();
-				--currentOption;
-			}
+//			options[currentOption].deactivate();
+			--currentOption;
+			currentOption = (currentOption + optionsCount) % optionsCount;
 			return true;
 		case KeyEvent.VK_DOWN:
-			if(currentOption < options.length - 1)
-			{
-				options[currentOption].deactivate();
-				++currentOption;
-			}
+//			options[currentOption].deactivate();
+			++currentOption;
+			currentOption = (currentOption + optionsCount) % optionsCount;
 			return true;
 		case KeyEvent.VK_ENTER:
 			if(currentOption == startPosition) // start game

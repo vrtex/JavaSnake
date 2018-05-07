@@ -8,7 +8,7 @@ public class StateSystem
     private LinkedList<GameState> states = new LinkedList<>();
     private GameState toAdd = null;
     private int toDelete = 0;
-    private Graphics2D graphics;
+    public Graphics2D graphics;
     
     public StateSystem(Graphics2D g)
 	{
