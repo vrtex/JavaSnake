@@ -18,7 +18,7 @@ public class GameField extends Rectangle
 	//	private HashSet<Obstacle> obstacles = new HashSet<>();
 	private Food food, bonusFood = null;
 	private int bonusCountdown = 1;
-	private Time bonusTime = Time.seconds(15);
+	private Time bonusTime = Time.seconds(5);
 	private Clock bonusTimer;
 //	public static char teleporterColors[] = new char[] {'R', 'B', 'G'};
 	private LinkedList<Character> avalibleColors = new LinkedList<>();
